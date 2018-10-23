@@ -1,0 +1,177 @@
+<html>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="OscillatorPlay.js"></script>
+        <script type="text/javascript">
+
+        function updateChords(){
+          document.getElementById("chorddisplay").value=chordnotes;
+        }
+
+
+          function updateUI(){
+            document.getElementById("keykey").value=chordkey;
+
+          }
+
+          function applyupdate()
+          {
+
+            chordkey = document.getElementById("keykey").value;
+            constructinterval = document.getElementById("interval").value;
+            numberofnotes = document.getElementById("times").value;
+            waveform = document.getElementById("waveform").value;
+            selectedscale = eval(document.getElementById("scaleselector").value);
+            // DANGEROUS // TODO: FIX THIS SECURITY FLAW!!
+
+          }
+
+
+          // function updatecolors()
+          // {
+          //   var targets = [];
+          //   // document.querySelectorAll("[class = 'black']").setAttribute("class", "black");
+          //   // document.querySelectorAll("[class = 'white']").setAttribute("class", "white");
+          //
+          //   var refscale = getScale(chordkey,MajorScale);
+          //
+          //   for (var i = 0; i < refscale.length; i++) {
+          //        targets.push(document.querySelectorAll("[pitchclass=" + refscale[i] + "]"))
+          //   }
+          //   console.log(targets[0]);
+          //
+          // }
+
+        </script>
+  <head>
+    <link href="piano.css" rel ="stylesheet" type="text/css">
+  </head>
+  <body>
+
+<!-- <audio src="bake.wav" type="audio/mpeg"></audio>
+<audio src="bells.wav" type="audio/mpeg"></audio> -->
+  <svg class="piano" height="230" width="1000" onclick = "updateChords()">
+    <polygon onclick="play(0);" points="200,10 230,10 230,100 245,100 245,220 200,220 200,10" class="white"  pitchclass="C" data-key="65"/>
+
+
+    <polygon onclick="play(1);" points="245,100 260,100 260,10 275,10 275,100 290,100 290,220 245,220 245,100" class="white" data-key="83" pitchclass="D"/>
+
+
+    <polygon onclick="play(2);" points="305,10 335,10 335,220 290,220 290,100 305,100 305,10" class="white" data-key="68" pitchclass="E"/>
+
+
+    <polygon onclick="play(3);" points="335,10 365,10 365,100 380,100 380,220 335,220 335,10" class="white" data-key="70" pitchclass="F"/>
+
+
+    <polygon onclick="play(4);" points="380,100 395,100 395,10 410,10 410,100 425,100 425,220 380,220 380,100" class="white" data-key="71" pitchclass="G"/>
+
+
+    <polygon onclick="play(5);" points="425,100 440,100 440,10 455,10 455,100 470,100 470,220 425,220 425,100" class="white" data-key="72" pitchclass="A"/>
+
+    <polygon onclick="play(6);" points="470,100 485,100 485,10 515,10 515,220 470,220 470,100" class="white" data-key="74" pitchclass="B"/>
+
+    <polygon onclick="play(7);" points="515,10 545,10 545,100 560,100 560,220 515,220 515,10" class="white" data-key="82" pitchclass="C"/>
+
+    <polygon onclick="play(8);" points="560,100 575,100 575,10 590,10 590,100 605,100 605,220 560,220" class="white" data-key="84" pitchclass="D"/>
+
+    <polygon onclick="play(9);" points="605,100 620,100 620,10 650,10 650,220 605,220 605,100" class="white" data-key="89" pitchclass="E"/>
+
+    <polygon onclick="play(10);" points="650,10 680,10 680,100 695,100 695,220 650,220 650,10" class="white" data-key="85" pitchclass="F"/>
+
+    <polygon onclick="play(11);" points="695,100 710,100 710,10 725,10 725,100 740,100 740,220 695,220 695,100" class="white" data-key="73" pitchclass="G"/>
+
+    <polygon onclick="play(12);" points="740,100 755,100 755,10 770,10 770,100 785,100 785,220 740,220 740,100" class="white" data-key="79" pitchclass="A"/>
+
+    <polygon onclick="play(13);" points="785,100 800,100 800,10 830,10 830,220 785,220 785,100" class="white" data-key="80" pitchclass="B"/>
+
+    <polygon onclick="play(14);"  points="230,10 260,10 260,100 230,100 230,10" class="black" data-key="49" pitchclass="C#"/>
+  <polygon onclick="play(15);"  points="275,10 305,10 305,100 275,100 275,10" class="black" data-key="50" pitchclass="D#"/>
+  <polygon onclick="play(16);"  points="365,10 395,10 395,100 365,100 365,10" class="black" data-key="51" pitchclass="F#"/>
+  <polygon onclick="play(17);" points="410,10 440,10 440,100 410,100 410,10" class="black" data-key="52" pitchclass="G#"/>
+  <polygon onclick="play(18);" points="455,10 485,10 485,100 455,100 455,10" class="black" data-key="53" pitchclass="A#"/>
+  <polygon onclick="play(19);" points="545,10 575,10 575,100 545,100 545,10" class="black" data-key="54" pitchclass="C#"/>
+  <polygon onclick="play(20);" points="590,10 620,10 620,100 590,100 590,10" class="black" data-key="55" pitchclass="D#"/>
+  <polygon onclick="play(21);" points="680,10 710,10 710,100 680,100 680,10" class="black" data-key="56" pitchclass="F#"/>
+  <polygon onclick="play(22);" points="725,10 755,10 755,100 725,100 725,10" class="black" data-key="57" pitchclass="G#"/>
+  <polygon onclick="play(23);" points="770,10 800,10 800,100 770,100 770,10" class="black" data-key="48" pitchclass="A#"/>
+  </svg>
+  <br>
+  <p>key</p>
+  <input type="text" name="key" value="C" id ="keykey">
+<p>waveform</p>
+  <input type="text" name="waveeee" value="sine" id ="waveform">
+<p>scale</p>
+  <input type="text" name="sscale" value="MajorScale" id ="scaleselector">
+<p>interval</p>
+  <input type="number" name="intervol" value=3 id ="interval">
+<p>times</p>
+  <input type="number" name="toimes" value=4 id ="times">
+  <button onclick="applyupdate()">Apply</button>
+
+
+
+  <br>
+  <button onclick="downCircle();updateUI()">Down Circle me</button>
+  <button onclick="upCircle();updateUI()">Up Circle me</button>
+
+  <input type="text" name="chordz" value="a" id ="chorddisplay">
+  <p>
+const MajorScale = 'TTSTTTS';<br>
+const MinorScale = 'TSTTSTT';<br>
+const WholeTone = 'TTTTTTT';<br>
+const Octatonic1 = 'TSTSTSTS';<br>
+const Octatonic2 = 'STSTSTST';<br>
+const MajorFlat6 = 'TTSTSSTS';<br>
+
+  <svg class="piano" height="230" width="1000" onclick = "updateChords()">
+    <polygon onclick="play(0);" points="200,10 230,10 230,100 245,100 245,220 200,220 200,10" class="white"  pitchclass="C" data-key="65"/>
+
+
+    <polygon onclick="play(1);" points="245,100 260,100 260,10 275,10 275,100 290,100 290,220 245,220 245,100" class="white" data-key="83" pitchclass="D"/>
+
+
+    <polygon onclick="play(2);" points="305,10 335,10 335,220 290,220 290,100 305,100 305,10" class="white" data-key="68" pitchclass="E"/>
+
+
+    <polygon onclick="play(3);" points="335,10 365,10 365,100 380,100 380,220 335,220 335,10" class="white" data-key="70" pitchclass="F"/>
+
+
+    <polygon onclick="play(4);" points="380,100 395,100 395,10 410,10 410,100 425,100 425,220 380,220 380,100" class="white" data-key="71" pitchclass="G"/>
+
+
+    <polygon onclick="play(5);" points="425,100 440,100 440,10 455,10 455,100 470,100 470,220 425,220 425,100" class="white" data-key="72" pitchclass="A"/>
+
+    <polygon onclick="play(6);" points="470,100 485,100 485,10 515,10 515,220 470,220 470,100" class="white" data-key="74" pitchclass="B"/>
+
+    <polygon onclick="play(7);" points="515,10 545,10 545,100 560,100 560,220 515,220 515,10" class="white" data-key="82" pitchclass="C"/>
+
+    <polygon onclick="play(8);" points="560,100 575,100 575,10 590,10 590,100 605,100 605,220 560,220" class="white" data-key="84" pitchclass="D"/>
+
+    <polygon onclick="play(9);" points="605,100 620,100 620,10 650,10 650,220 605,220 605,100" class="white" data-key="89" pitchclass="E"/>
+
+    <polygon onclick="play(10);" points="650,10 680,10 680,100 695,100 695,220 650,220 650,10" class="white" data-key="85" pitchclass="F"/>
+
+    <polygon onclick="play(11);" points="695,100 710,100 710,10 725,10 725,100 740,100 740,220 695,220 695,100" class="white" data-key="73" pitchclass="G"/>
+
+    <polygon onclick="play(12);" points="740,100 755,100 755,10 770,10 770,100 785,100 785,220 740,220 740,100" class="white" data-key="79" pitchclass="A"/>
+
+    <polygon onclick="play(13);" points="785,100 800,100 800,10 830,10 830,220 785,220 785,100" class="white" data-key="80" pitchclass="B"/>
+
+    <polygon onclick="play(14);"  points="230,10 260,10 260,100 230,100 230,10" class="black" data-key="49" pitchclass="C#"/>
+  <polygon onclick="play(15);"  points="275,10 305,10 305,100 275,100 275,10" class="black" data-key="50" pitchclass="D#"/>
+  <polygon onclick="play(16);"  points="365,10 395,10 395,100 365,100 365,10" class="black" data-key="51" pitchclass="F#"/>
+  <polygon onclick="play(17);" points="410,10 440,10 440,100 410,100 410,10" class="black" data-key="52" pitchclass="G#"/>
+  <polygon onclick="play(18);" points="455,10 485,10 485,100 455,100 455,10" class="black" data-key="53" pitchclass="A#"/>
+  <polygon onclick="play(19);" points="545,10 575,10 575,100 545,100 545,10" class="black" data-key="54" pitchclass="C#"/>
+  <polygon onclick="play(20);" points="590,10 620,10 620,100 590,100 590,10" class="black" data-key="55" pitchclass="D#"/>
+  <polygon onclick="play(21);" points="680,10 710,10 710,100 680,100 680,10" class="black" data-key="56" pitchclass="F#"/>
+  <polygon onclick="play(22);" points="725,10 755,10 755,100 725,100 725,10" class="black" data-key="57" pitchclass="G#"/>
+  <polygon onclick="play(23);" points="770,10 800,10 800,100 770,100 770,10" class="black" data-key="48" pitchclass="A#"/>
+  </svg>
+
+
+
+  </p>
+
+
+  </body>
+</html>
