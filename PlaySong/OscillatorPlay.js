@@ -353,7 +353,6 @@ function downCircle()
 }
 
 
-        // Connect our process to the mixer of the audioContext.
 
 
 
