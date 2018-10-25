@@ -5,7 +5,7 @@ const WholeTone = 'TTTTTTT';
 const Octatonic1 = 'TSTSTSTS';
 const Octatonic2 = 'STSTSTST';
 const MajorFlat6 = 'TTSTSSTS';
-const circleofFifths = ["C","G","D","A","E","B","F#","C#","G#","A#","F"];
+const circleofFifths = ["C","G","D","A","E","B","F#","C#","G#","D#","A#","F"];
 
 
 //----Melody Harmony BOILERPLATE CODE____-----____---____--___-_____----
