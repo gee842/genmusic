@@ -1,0 +1,36 @@
+<html>
+        <script src="Rhythmtest.js"></script>
+
+  <head>
+
+  </head>
+  <body>
+    <script>
+  var sample = new RhythmSample();
+  var sample2 = new RhythmSample2();
+  var beat;
+
+
+    function applyupdate()
+    {
+
+      beat = document.getElementById("keykey").value;
+
+      // DANGEROUS // TODO: FIX THIS SECURITY FLAW!!
+
+    }
+  </script>
+  <button onclick="ostinato('Iooxooo',['C3'],125,context.currentTime+1,'triangle',8);ostinato('Ixixixix',['F#3'],100,context.currentTime+1,'triangle',8);ostinato('Ixixixix',['E4'],75,context.currentTime+1,'triangle',8)">Play beat</button>
+  <button onclick="ostinato(beat,['C3'],125,context.currentTime+1,'triangle',5);">Play beat</button>
+  <p>beat</p>
+  <input type="text" name="beat" value="IoooIoooIxIxIoxx" id ="keykey">
+
+
+
+  <br>
+  <button onclick="applyupdate();">Apply</button>
+
+
+
+  </body>
+</html>
