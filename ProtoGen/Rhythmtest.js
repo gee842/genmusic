@@ -7,25 +7,6 @@ const Octatonic2 = 'STSTSTST';
 const MajorFlat6 = 'TTSTSSTS';
 const circleofFifths = ["C","G","D","A","E","B","F#","C#","G#","D#","A#","F"];
 
-
-
-
-
-
-
-
-//Contrary Motion
-//No Parallel Movements
-//
-
-
-
-
-
-
-
-
-
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min) ) + min;
 }
@@ -57,7 +38,7 @@ function findDistance(note1,note2)
 
 function single_transpose(note,setting)
 {
-    original = note;
+    original = note
 
     if (original.length === 3){
       octave = original.charAt(2);

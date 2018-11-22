@@ -236,7 +236,7 @@ function fillpolyrhythm(number)
   ra = [];
   for (var j=0; j<number; j++)
   {
-    div = getRndInteger(2,7);
+    div = getRndInteger(3,7);
     re = "";
     for (var i = 0; i < div; i++) {
       re += "Io";
@@ -418,65 +418,51 @@ var RhythmSample = function() {
 };
 
 
-var RhythmSample2 = function() {
-  loadSounds(this, {
-    kick: './kick.wav',
-    snare: './snare.wav',
-    perc1: './perc1.wav',
-    hihat: './hihat.wav',
-    hatopen: './openhat.wav'
-  });
-};
-
-
-
-RhythmSample.prototype.play = function(startTime) {
-  // We'll start playing the rhythm 100 milliseconds from "now"
-  var tempo = 100; // BPM (beats per minute)
-  var eighthNoteTime = (60 / tempo) / 2;
-
-  // Play 2 bars of the following:
-  for (var bar = 0; bar < 4; bar++) {
-
-    var time = startTime + bar * 8 * eighthNoteTime;
-
-    playSound(this.kick, time + 0 * eighthNoteTime);
-    //1
 
 
 
 
-    playSound(this.snare, time + 4 * eighthNoteTime);
 
 
 
-  }
-};
 
-RhythmSample2.prototype.play = function(startTime) {
-  // We'll start playing the rhythm 100 milliseconds from "now"
-  var tempo = 100; // BPM (beats per minute)
-  var eighthNoteTime = (60 / tempo) / 2;
 
-  // Play 2 bars of the following:
-  for (var bar = 0; bar < 4; bar++) {
 
-    var time = startTime + bar * 7 * eighthNoteTime;
-    playSound(this.kick, time + 0 * eighthNoteTime);
-    playSound(this.snare, time+6 * eighthNoteTime);
 
-  for (var i = 0; i < 7; i++) {
-    {
-      playSound(this.hihat, time + i * eighthNoteTime)
 
+
+
+
+
+
+function PolyChord(progression,key,basetempo,type,startTime,times)
+{
+  var offset = 0;
+  var eighthNoteTime = 30/basetempo;
+
+  for (var bar = 0; bar < progression.length; bar++) {
+    offset +=   (times*240/basetempo)
+    notedegree = Number(progression.charAt(bar));
+    chordtones = dia_chordConstructor(key,notedegree,3,getRndInteger(3,7),MajorScale);
+    chordtones = scatter(chordtones,1);
+    beatarray = fillpolyrhythm(chordtones.length)
+    for (var i = 0; i < chordtones.length; i++) {
+      cr = (beatarray[i].length)/8;
+       console.log(chordtones[i])
+       ostinato(beatarray[i],[chordtones[i]],basetempo*cr,startTime+offset,type,times);
     }
+    basstones = chordtones.slice(0,3);
+    for (var i = 0; i < 3; i++) {
+      basstones[i] = basstones[i].slice(0,-1) + "3";
+    }
+    console.log([basstones[0]])
+    dr = ("Ioxxxx".length)/8; //adjust for length
+    ostinato("Ioxxxx",[basstones[0]],basetempo*dr,startTime+offset,"triangle",times);
+    ostinato("xxIoxx",[basstones[1]],basetempo*dr,startTime+offset,"triangle",times);
+    ostinato("xxxxIo",[basstones[2]],basetempo*dr,startTime+offset,"triangle",times);
+
   }
-  }
-};
-
-
-
-
+}
 
 
 //[Chordnotes],[Polyrhythms],BaseTempo,Times

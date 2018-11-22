@@ -1,0 +1,45 @@
+<html>
+        <script src="Rhythmtest.js"></script>
+
+  <head>
+
+  </head>
+  <body>
+    <script>
+  var beatarray;
+  var notesarray;
+  var tempo;
+  var timez;
+
+
+    function applyupdate()
+    {
+
+      beatarray = document.getElementById("keykey").value.split(',');
+      notesarray = document.getElementById("notez").value.split(',');
+      tempo = document.getElementById("tempz").value;
+      timez = document.getElementById("repeats").value;
+
+
+    }
+  </script>
+  <button onclick="PRChord(notesarray,beatarray,tempo,context.currentTime+1,'triangle',2)">Play</button>
+
+  <button onclick="notesarray=createRandomChord(3,MajorScale);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,tempo,context.currentTime+0.2,'triangle',timez)">Random Chords</button>
+
+
+  <p>beat</p>
+  <input type="text" name="beat" value="Ioioioio,Ixixixixix,IooixxIooixx" id ="keykey">
+  <input type="text" name="notes" value="C3,E4,G4" id ="notez">
+  <input type="number" name="tempo" value=100 id ="tempz">
+  <input type="number" name="repeats" value=4 id ="repeats">
+
+
+
+  <br>
+  <button onclick="applyupdate();">Apply</button>
+
+
+
+  </body>
+</html>

@@ -7,25 +7,6 @@ const Octatonic2 = 'STSTSTST';
 const MajorFlat6 = 'TTSTSSTS';
 const circleofFifths = ["C","G","D","A","E","B","F#","C#","G#","D#","A#","F"];
 
-
-
-
-
-
-
-
-//Contrary Motion
-//No Parallel Movements
-//
-
-
-
-
-
-
-
-
-
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min) ) + min;
 }
@@ -57,7 +38,7 @@ function findDistance(note1,note2)
 
 function single_transpose(note,setting)
 {
-    original = note;
+    original = note
 
     if (original.length === 3){
       octave = original.charAt(2);
@@ -230,13 +211,13 @@ function scatter(inputnotes,scat)
   if (scat)
   {
     for (var i = 0; i < inputnotes.length-1; i++) {
-      outputnotes.push(inputnotes[i] + (getRndInteger(3,6).toString()));
+      outputnotes.push(inputnotes[i] + (getRndInteger(4,6).toString()));
     }
-    outputnotes.push(inputnotes[inputnotes.length-1] + (getRndInteger(4,7).toString()));
+    outputnotes.push(inputnotes[inputnotes.length-1] + (getRndInteger(5,8).toString()));
   }
   else {
     for (var i = 0; i < inputnotes.length; i++) {
-      outputnotes.push(inputnotes[i] + "3");
+      outputnotes.push(inputnotes[i] + "4");
     }
   }
   return outputnotes;
@@ -255,7 +236,7 @@ function fillpolyrhythm(number)
   ra = [];
   for (var j=0; j<number; j++)
   {
-    div = getRndInteger(2,7);
+    div = getRndInteger(3,7);
     re = "";
     for (var i = 0; i < div; i++) {
       re += "Io";
@@ -272,7 +253,7 @@ function playNotes(notearray, oscillators,time,eighthNoteTime,duration,accent, t
   for (i = 0; i < notearray.length; i++)
   {
     var gainNode = context.createGain();
-      if (accent) {
+      if (accent == 1) {
           gainNode.gain.value = 0.6;
 
       }
@@ -286,8 +267,8 @@ function playNotes(notearray, oscillators,time,eighthNoteTime,duration,accent, t
     oscillators[i].connect(gainNode);
     gainNode.connect(context.destination);
     oscillators[i].start(time);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, time + eighthNoteTime*3)
-    oscillators[i].stop(time + eighthNoteTime*duration);
+    gainNode.gain.exponentialRampToValueAtTime(0.05, time + (0.3))
+    oscillators[i].stop(time + eighthNoteTime*(duration+1));
 
   }
 }
@@ -437,65 +418,79 @@ var RhythmSample = function() {
 };
 
 
-var RhythmSample2 = function() {
-  loadSounds(this, {
-    kick: './kick.wav',
-    snare: './snare.wav',
-    perc1: './perc1.wav',
-    hihat: './hihat.wav',
-    hatopen: './openhat.wav'
-  });
-};
-
-
-
-RhythmSample.prototype.play = function(startTime) {
-  // We'll start playing the rhythm 100 milliseconds from "now"
-  var tempo = 100; // BPM (beats per minute)
-  var eighthNoteTime = (60 / tempo) / 2;
-
-  // Play 2 bars of the following:
-  for (var bar = 0; bar < 4; bar++) {
-
-    var time = startTime + bar * 8 * eighthNoteTime;
-
-    playSound(this.kick, time + 0 * eighthNoteTime);
-    //1
 
 
 
 
-    playSound(this.snare, time + 4 * eighthNoteTime);
 
 
 
+function PolyUnit(rhythm,notes,basetempo,type){
+  this.rhythm = rhythm;
+  this.notes = notes;
+  this.basetempo = basetempo;
+  this.type = type;
+  this.cr = (rhythm.length/8);
+}
+PolyUnit.prototype.play = function(startTime){
+  ostinato(this.rhythm,this.notes,this.basetempo*this.cr,startTime,this.type,1);
+}
+PolyUnit.prototype.start = function(startTime){
+  ostinato(this.rhythm,this.notes,this.basetempo*this.cr,startTime,this.type,1);
+}
+
+
+ var ff = new PolyUnit("ixixixix",["C4","E4"],90,"sine")
+ var ee = new PolyUnit("Ixixix",["E4","G4"],90,"sine")
+ var dd = new PolyUnit("Ixixixixix",["G4","B4"],90,"sine")
+ var cc = new PolyUnit("xxxxxixi",["D4","F4"],90,"sine")
+
+
+var PolyUnits = [];
+ PolyUnits.push(ff);
+ PolyUnits.push(ee);
+ PolyUnits.push(dd);
+ PolyUnits.push(cc);
+
+
+
+function PolyTrigger(PolyArray,time)
+{
+  for (var i = 0; i < PolyArray.length; i++) {
+    PolyArray[i].play(time);
   }
-};
+}
 
-RhythmSample2.prototype.play = function(startTime) {
-  // We'll start playing the rhythm 100 milliseconds from "now"
-  var tempo = 100; // BPM (beats per minute)
-  var eighthNoteTime = (60 / tempo) / 2;
 
-  // Play 2 bars of the following:
-  for (var bar = 0; bar < 4; bar++) {
+function PolyChord(progression,key,type,startTime)
+{
+  var basetempo = PolyUnits[0].basetempo;
+  var offset = 0;
+  var eighthNoteTime = 30/basetempo;
 
-    var time = startTime + bar * 7 * eighthNoteTime;
-    playSound(this.kick, time + 0 * eighthNoteTime);
-    playSound(this.snare, time+6 * eighthNoteTime);
-
-  for (var i = 0; i < 7; i++) {
-    {
-      playSound(this.hihat, time + i * eighthNoteTime)
-
+  for (var bar = 0; bar < progression.length; bar++) {
+    offset +=   (240/basetempo)
+    notedegree = Number(progression.charAt(bar));
+    chordtones = dia_chordConstructor(key,notedegree,3,PolyUnits.length,MajorScale);
+    chordtones = scatter(chordtones,1);
+    beatarray = fillpolyrhythm(chordtones.length)
+    for (var i = 0; i < PolyUnits.length; i++) {
+      PolyUnits[i].notes = [chordtones[i]];
+      console.log(chordtones[i])
     }
+    PolyTrigger(PolyUnits,startTime+offset);
+     basstones = chordtones.slice(0,3);
+     for (var i = 0; i < 3; i++) {
+       basstones[i] = basstones[i].slice(0,-1) + "3";
+     }
+     console.log([basstones[0]])
+     dr = ("Ioxxxx".length)/8; //adjust for length
+     ostinato("Ioxxxx",[basstones[0]],basetempo*dr,startTime+offset,"triangle",1);
+     ostinato("xxIoxx",[basstones[1]],basetempo*dr,startTime+offset,"triangle",1);
+     ostinato("xxxxIo",[basstones[2]],basetempo*dr,startTime+offset,"triangle",1);
+
   }
-  }
-};
-
-
-
-
+}
 
 
 //[Chordnotes],[Polyrhythms],BaseTempo,Times
@@ -562,11 +557,11 @@ function ostinato(rhythm,notearray,tempo,startTime,type,duration)
       switch (state) {
         case "I":
         //play
-        playNotes(notearray,OstOsc,time + i*eighthNoteTime,eighthNoteTime,(durationadded+0.75),1,type,context);
+        playNotes(notearray,OstOsc,time + i*eighthNoteTime,eighthNoteTime,(durationadded),1,type,context);
 
         break;
         case "i":
-        playNotes(notearray,OstOsc,time + i * eighthNoteTime,eighthNoteTime,(durationadded+0.75),0,type,context);
+        playNotes(notearray,OstOsc,time + i * eighthNoteTime,eighthNoteTime,(durationadded),0,type,context);
         break;
 
         case "x":
