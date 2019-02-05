@@ -1,0 +1,88 @@
+<html>
+
+        <script src="Rhythmtest.js"></script>
+
+  <head>
+
+  </head>
+  <body>
+    <script>
+  var beatarray;
+  var notesarray;
+  var tempo;
+  var timez;
+
+
+    function viewPoly()
+    {
+      for (var i = 0; i < PolyUnits.length; i++) {
+        console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+      }
+    }
+    function applyupdate()
+    {
+
+      beatarray = document.getElementById("keykey").value;
+      notesarray = document.getElementById("notez").value.split(',');
+      tempo = document.getElementById("tempz").value;
+      type = document.getElementById("tipe").value;
+      PolyUnits.push(new PolyUnit(beatarray,notesarray,tempo,type));
+
+      for (var i = 0; i < PolyUnits.length; i++) {
+        console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+      }
+
+    }
+    function updateKey()
+    {
+      currentkey = document.getElementById("key").value;
+      return currentkey;
+    }
+  </script>
+  <button onclick="PolyTrigger(PolyUnits, context.currentTime)">Play Array</button>
+
+  <button onclick="PolyUnits = [];applyupdate();">Clear Array</button>
+  <button onclick="isPlaying = 1;console.log(isPlaying);EventLoop(document.getElementById('key').value,'triangle',context.currentTime+0.2,document.getElementById('scaleselect').value);">Start Array</button>
+  <button onclick="isPlaying = 0;console.log(isPlaying);">Stop Array</button>
+  <button onclick="viewPoly()">View Polyrhythms</button>
+
+  <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button>
+
+
+  <p>Rhythm cell Input</p>
+  <input type="text" name="beat" value="Ioioioio" id ="keykey">
+  <input type="text" name="notes" value="C4" id ="notez">
+  <input type="number" name="tempo" value=90 id ="tempz">
+  <input type="text" name="type" value="sine" id ="tipe">
+  <br>
+  <button onclick="applyupdate();">Push Notes</button>
+  <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),['C'],document.getElementById('tempz').value,document.getElementById('tipe').value));viewPoly();">Push Random Poly</button>
+  <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove last Poly</button>
+  <p>song key</p>
+  <input type="text" name="key" value="D" id ="key">
+  <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
+  <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
+
+  <button onclick="shufflePoly();viewPoly();">Shuffle Polyrhythms</button>
+  <br>
+
+<select id="scaleselect">
+  <option value="TTSTTTS">MajorScale</option>
+  <option value="TSTTSTT">MinorScale</option>
+  <option value="TTTTTTT">WholeTone</option>
+  <option value="TSTSTSTS">Octatonic1</option>
+  <option value="STSTSTST">Octatonic2</option>
+  <option value="TTSTSSTS">MajorFlat6</option>
+
+</select>
+
+const MajorScale = 'TTSTTTS';<br>
+const MinorScale = 'TSTTSTT';<br>
+const WholeTone = 'TTTTTTT';<br>
+const Octatonic1 = 'TSTSTSTS';<br>
+const Octatonic2 = 'STSTSTST';<br>
+const MajorFlat6 = 'TTSTSSTS';<br>
+
+
+  </body>
+</html>
