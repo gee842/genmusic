@@ -2,7 +2,7 @@
 
 const GlobalNotes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 const MajorScale = 'TTSTTTS';
-const MinorScale = 'TSTTSTT';
+const MinorScale = 'TSTTSTS';
 const WholeTone = 'TTTTTTT';
 const Octatonic1 = 'TSTSTSTS';
 const Octatonic2 = 'STSTSTST';

@@ -35,7 +35,7 @@ var Particle = function(x,y,z,c,t){
 
 function emitTriangle()
 {
-  particleList = particleList.concat(randomInitParticles(EMIT_RATE,1.0,-1.0));
+  particleList = particleList.concat(randomInitParticles(EMIT_RATE,1.2,-1.2));
 }
 
 
@@ -47,9 +47,9 @@ function randomInitParticles(number,min,max)
   outs = [];
 
   for (var i = 0; i < number; i++) {
-    x = Math.random() * (max - min) + min;
-    y = Math.random() * (max - min) + min + 3;
-    z = Math.random() * (max - min) + min;
+    x = Math.random() * (max - min) + min
+    y = Math.random() * (max - min) + min
+    z = Math.random() * (max - min) + min
     cr = Math.random()
     cg = Math.random()
     cb = Math.random()

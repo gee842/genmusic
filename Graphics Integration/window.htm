@@ -120,11 +120,11 @@ function updateGraphicsSettings()
 0.00190 default
 <br>
   Emitter Velocity Variance
-  <input type="number" name="variance" value=0.02 id ="velvar">
+  <input type="number" name="variance" value=1.02 id ="velvar">
 0.015 default
     <br>
     Rotation Matrix
-    <input type="text" name="rotation" value="-1.0,1.0,0.0" id ="rotatematrix">
+    <input type="text" name="rotation" value="0.0,0.6,0.3" id ="rotatematrix">
     <br>
     Emit Color
     <input type="text" name="colormatrix" value="0.0,0.01,0.0" id ="emitcolor">
@@ -151,8 +151,8 @@ function updateGraphicsSettings()
   <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
 
 <select id="scaleselect">
-  <option value="TTSTTTS">MajorScale</option>
   <option value="TSTTSTT">MinorScale</option>
+  <option value="TTSTTTS">MajorScale</option>
   <option value="TTTTTTT">WholeTone</option>
   <option value="TSTSTSTS">Octatonic1</option>
   <option value="STSTSTST">Octatonic2</option>
