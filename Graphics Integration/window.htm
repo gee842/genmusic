@@ -1,0 +1,187 @@
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<html>
+
+        <script src="Rhythmtest.js"></script>
+        <script src="gl-matrix.js"></script>
+<script src="graphics.js"></script>
+
+  <head>
+
+  </head>
+  <body>
+    <script>
+  var beatarray;
+  var notesarray;
+  var tempo;
+  var timez;
+
+
+    function viewPoly()
+    {
+      for (var i = 0; i < PolyUnits.length; i++) {
+        console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+      }
+    }
+    function applyupdate()
+    {
+
+      beatarray = document.getElementById("keykey").value;
+      notesarray = [];
+      tempo = 100;
+      type = "sine";
+      PolyUnits.push(new PolyUnit(beatarray,notesarray,tempo,type));
+
+      for (var i = 0; i < PolyUnits.length; i++) {
+        console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+      }
+
+    }
+    function updateKey()
+    {
+      currentkey = document.getElementById("key").value;
+      return currentkey;
+    }
+  </script>
+<input type="text" name="fps" value="0" id ="fps">
+<input type="text" name="vcount" value="0" id ="vcount">
+<br>
+<canvas id="glCanvas" width="900" height="700">
+  Browser Unsupported
+</canvas>
+<br>
+
+<script>
+function updateGraphicsSettings()
+{
+  document.getElementById("fps").value = fps;
+  totalFrames = 0;
+  startTime = performance.now();
+  DRAW_MODE = document.getElementById("drawmode").value;
+
+  //SHAPE_VERTEX = document.getElementById("drawnum").value;
+  EMIT_RATE = document.getElementById("particlenum").value;
+  AUTO_ROTATE = document.getElementById("rotatematrix").value.split(',').map(Number);
+  EMIT_COLOR = document.getElementById("emitcolor").value.split(',').map(Number);
+  PARTICLE_LIFE = document.getElementById("particlelife").value;
+  GRAVITY_STRENGTH = parseFloat(document.getElementById("grav").value);
+  VELOCITY_VARIANCE = document.getElementById("velvar").value;
+  switch(DRAW_MODE) {
+    case "gl.LINES":
+        SHAPE_VERTEX = 2
+        break;
+    case "gl.TRIANGLES":
+        SHAPE_VERTEX = 3
+        break;
+    case "gl.POINTS":
+        SHAPE_VERTEX = 1
+        break;
+    case "gl.LINE_STRIP":
+        SHAPE_VERTEX = 2
+        break;
+    case "gl.QUADs":
+        SHAPE_VERTEX = 4
+        break;
+  }
+
+}
+
+</script>
+    
+    <button onclick="if(!isPlaying){isPlaying = 1;updateGraphicsSettings();EventLoop(document.getElementById('key').value,'triangle',context.currentTime+0.2,document.getElementById('scaleselect').value);}">Start Array</button>
+  <button onclick="isPlaying = 0;console.log(isPlaying);">Stop Array</button>
+  <button onclick="shufflePoly();viewPoly();">Shuffle Polyrhythms</button>
+   <button onclick="updateGraphicsSettings()">Apply Particles</button>
+   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),['C'],100,'sine'));viewPoly();">Push Random Poly</button>
+  <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove last Poly</button>
+  <br>
+    Number of Emitters
+    <input type="number" name="emitters" value=1 id ="particlenum">
+    <br>
+    Draw Mode
+
+
+  <select id="drawmode">
+    <option value="gl.LINE_STRIP">Lines Connect</option>
+    <option value="gl.TRIANGLES">Triangle</option>
+    <option value="gl.LINES">Lines</option>
+    <option value="gl.POINTS">Points</option>
+
+  </select>
+
+  <br>
+  time to live
+  <input type="number" name="ttl" value=400 id ="particlelife">
+130 default
+<br>
+
+  Gravity Strength
+  <input type="text" name="gravity" value="0.0003" id ="grav">
+0.00190 default
+<br>
+  Emitter Velocity Variance
+  <input type="number" name="variance" value=0.02 id ="velvar">
+0.015 default
+    <br>
+    Rotation Matrix
+    <input type="text" name="rotation" value="-1.0,1.0,0.0" id ="rotatematrix">
+    <br>
+    Emit Color
+    <input type="text" name="colormatrix" value="0.0,0.01,0.0" id ="emitcolor">
+   
+  <br>
+  <button onclick="reverseVelocities(particleList);">Reverse Velocity</button>
+
+
+
+
+
+
+
+
+
+
+
+  <button onclick="PolyTrigger(PolyUnits, context.currentTime)">Play Array</button>
+
+  <button onclick="PolyUnits = [];applyupdate();">Clear Array</button>
+
+  <button onclick="viewPoly()">View Polyrhythms</button>
+
+  <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
+
+<select id="scaleselect">
+  <option value="TTSTTTS">MajorScale</option>
+  <option value="TSTTSTT">MinorScale</option>
+  <option value="TTTTTTT">WholeTone</option>
+  <option value="TSTSTSTS">Octatonic1</option>
+  <option value="STSTSTST">Octatonic2</option>
+  <option value="TTSTSSTS">MajorFlat6</option>
+
+</select>
+
+<table style="width:60%">
+  <tr>
+  <th>
+  <p>Rhythm cell Input</p>
+  <input type="text" name="beat" value="Ioioioio" id ="keykey">
+  <br>
+  <button onclick="applyupdate();">Push Notes</button>
+  
+</th>
+<th>
+  <p>song key</p>
+  <input type="text" name="key" value="D" id ="key">
+  <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
+  <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
+</th>
+
+  <br>
+</tr>
+</table>
+
+<script type="text/javascript">InitDemo();</script>
+
+
+  </body>
+</html>
