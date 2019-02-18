@@ -367,7 +367,7 @@ var InitDemo = function(){
   //MAIN RENDER LOOP
   var identityMatrix = new Float32Array(16);
   mat4.identity(identityMatrix);
-  console.log(particleList);
+  //console.log(particleList);
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
 
