@@ -112,15 +112,15 @@ function autoMutate(times)
 {
     pol1 = Math.random() < 0.5 ? -1 : 1;
     pol2 = Math.random() < 0.5 ? -1 : 1;
-    pol3 = Math.random() < 0.5 ? 1 : 0;
-    pol4 = Math.random() < 0.5 ? 1 : 0;
+    pol3 = Math.random() < 0.3 ? 1 : 0;
+    pol4 = Math.random() < 0.8 ? 1 : 0;
   var mutseed = getRndInteger(1,times*4);
   //console.log("times" + times);
   if (mutseed>times*2) 
   {
     currtempo = parseFloat(document.getElementById('tempochange').value);
     //console.log(currtempo);
-    tempodiff = getRndInteger(3,8);
+    tempodiff = getRndInteger(5,15);
 
     newtempo = parseFloat(currtempo) + (pol1 * parseFloat(tempodiff));
     //console.log(newtempo);
@@ -135,13 +135,15 @@ function autoMutate(times)
     }
     else
     {
-    console.log("Polyrhythm changed")
-    shufflePoly();
+    shufflenum= getRndInteger(0,PolyUnits.length);
+    console.log("Polyrhythm changed" + shufflenum);
+
+    shufflePoly(shufflenum,PolyUnits.length);
     }
 
     if (pol4)
     {
-      if (pol3 == -1)
+      if (pol3 == 0)
       {
         if (PolyUnits.length>1){PolyUnits.pop()};
       }
@@ -154,6 +156,7 @@ function autoMutate(times)
         }
         else
         {
+          PolyUnits.pop();
           PolyUnits.pop();
         }
 
@@ -193,9 +196,9 @@ function spicy_shuffle()
     
     <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,'triangle',context.currentTime,document.getElementById('scaleselect').value);expectedtime=context.currentTime;}">Start Generation</button>
   <button onclick="isPlaying = 0;">Stop Generation</button>
-  <button onclick="shufflePoly();viewPoly();">Shuffle Polyrhythms</button>
+  <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
-   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],90,Math.random() >0.5 ?'sine':'triangle'));viewPoly();">Push Random Layer</button>
+   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],90,Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
   <input type="checkbox" id="automutate" checked=True> Auto<br>
 

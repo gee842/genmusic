@@ -501,10 +501,11 @@ var PolyUnits = [];
  PolyUnits.push(cc);
  PolyUnits.push(ee);
 
-function shufflePoly()
+function shufflePoly(start,end)
 {
-  for (var i = 0; i < PolyUnits.length; i++) {
-    PolyUnits[i] = new PolyUnit(randompolyrhythm(3,getRndInteger(2,7))[0],[],PolyUnits[i].basetempo,PolyUnits[i].type);
+  for (var i = start; i < end; i++) {
+    PolyUnits[i].rhythm = randompolyrhythm(3,getRndInteger(2,7))[0];
+    PolyUnits[i].cr = (PolyUnits[i].rhythm.length)/8;
   }
 }
 function shuffleonePoly()
