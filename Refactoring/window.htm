@@ -155,7 +155,7 @@ function autoMutate(times)
     {
       if (pol3 == 0)
       {
-        if (PolyUnits.length>1){PolyUnits.pop()};
+        if (PolyUnits.length>2){PolyUnits.pop()};
         console.log("Last poly removed");
       }
 
@@ -180,7 +180,7 @@ function autoMutate(times)
 
 </script>
     
-    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,'triangle',context.currentTime,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
+    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,context.currentTime,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
   <button onclick="isPlaying = 0;">Stop Generation</button>
   <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->

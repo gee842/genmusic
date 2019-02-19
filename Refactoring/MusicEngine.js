@@ -413,7 +413,7 @@ function PolyTrigger(PolyArray,time)
 
 
 
-function EventLoop(key,type,startTime)
+function EventLoop(key,startTime)
 {
 
   var basetempo = PolyUnits[0].basetempo;
@@ -431,7 +431,7 @@ function EventLoop(key,type,startTime)
     chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
     chordtones = scatter(chordtones,1);
 
-    var minorcheck = 0;
+    //var minorcheck = 0;
     //while (eval_minor_nine(chordtones) == 0) //checks minor ninths
     //{
       // chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
@@ -472,14 +472,14 @@ function EventLoop(key,type,startTime)
           //changeTempo(updateTempo(),PolyUnits);
           //updateGraphicsSettings();
           barcount=0;
-          EventLoop(nextkey,type,context.currentTime,globalscale);
+          EventLoop(nextkey,context.currentTime+0.01,globalscale);
         }
 
         setTimeout(restart,startTime+(240000/basetempo));
       }
       else
       {
-        setTimeout(function(){EventLoop(nextkey,type,(startTime+(240/basetempo)),globalscale);},(240000/basetempo));   
+        setTimeout(function(){EventLoop(nextkey,(startTime+(240/basetempo)),globalscale);},(240000/basetempo));   
       }
   	}
   else {
