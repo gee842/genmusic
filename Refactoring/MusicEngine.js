@@ -1,6 +1,6 @@
 var mutatenumber=3;
 var automutate_switch=1;
-var barcount;
+var barcount=0;
 var expectedtime=0.0;
 var timediff = 0.0;
 var lastOscUsed = 0;
@@ -15,11 +15,11 @@ const Octatonic2 = 'STSTSTST';
 const MajorFlat6 = 'TTSTSSTS';
 const circleofFifths = ["C","G","D","A","E","B","F#","C#","G#","D#","A#","F"];
 var isPlaying = 0;
-context = new (window.AudioContext || window.webkitAudioContext)();
+context = new (window.AudioContext || window.webkitAudioContext);
 var renderstart = context.currentTime;
 var OstOsc = init_osc(context,'sine',20);
 var Gains = init_gain(context,20);
-
+var EQArray = init_eqs(context,20);
 
 Array.prototype.randomElement = function () {
     return this[Math.floor(Math.random() * this.length)]
@@ -174,29 +174,74 @@ function dia_chordConstructor(key,degree,interval,number,scale)
 
 }
 
+// function scatter(inputnotes,scat)
+// {
+
+
+//   outputnotes = [];
+//   if (scat)
+//   {
+//     outputnotes.push(inputnotes[0] + (getRndInteger(3,4).toString()));
+//     if (inputnotes.length >1)
+//     {
+
+//     for (var i = 1; i < inputnotes.length-3; i++) {
+//       outputnotes.push(inputnotes[i] + (getRndInteger(3,5).toString()));
+//     }
+//     outputnotes.push(inputnotes[inputnotes.length-2] + (getRndInteger(4,6).toString()));
+//     outputnotes.push(inputnotes[inputnotes.length-1] + (getRndInteger(5,7).toString()));
+//     }
+
+//   }
+//   else {
+//     for (var i = 0; i < inputnotes.length; i++) {
+//       outputnotes.push(inputnotes[i] + "4");
+//     }
+//   }
+//   console.log(outputnotes);
+//   return outputnotes;
+// }
+
+
 function scatter(inputnotes,scat)
 {
 
-
   outputnotes = [];
+
   if (scat)
   {
-    outputnotes.push(inputnotes[0] + (getRndInteger(3,4).toString()));
-    for (var i = 1; i < inputnotes.length-2; i++) {
-      outputnotes.push(inputnotes[i] + (getRndInteger(3,5).toString()));
+    numofnotes = inputnotes.length;
+    if (numofnotes == 1)
+    {
+      return [inputnotes[0] + (getRndInteger(3,4).toString())]
     }
-    outputnotes.push(inputnotes[inputnotes.length-2] + (getRndInteger(4,6).toString()));
-    outputnotes.push(inputnotes[inputnotes.length-1] + (getRndInteger(5,7).toString()));
+    else if (numofnotes==2)
+    {
+      outputnotes.push(inputnotes[0] + (getRndInteger(3,4).toString()));
+        for (var i = 1; i < inputnotes.length; i++) {
+        outputnotes.push(inputnotes[i] + (getRndInteger(4,6).toString()));
+      }
+    }
+    else
+    {
+        outputnotes.push(inputnotes[0] + (getRndInteger(3,4).toString()));
+        for (var i = 1; i < inputnotes.length-1; i++) {
+        outputnotes.push(inputnotes[i] + (getRndInteger(4,6).toString()));
+      }
+      outputnotes.push(inputnotes[numofnotes-1] + (getRndInteger(5,7).toString()))
+    }
   }
-  else {
-    for (var i = 0; i < inputnotes.length; i++) {
+
+  else
+  {
+     for (var i = 0; i < inputnotes.length; i++) {
       outputnotes.push(inputnotes[i] + "4");
     }
   }
+
+console.log(outputnotes);
   return outputnotes;
 }
-
-
 
 function randompolyrhythm(number,div)
 {
@@ -229,14 +274,24 @@ function randompolyrhythm(number,div)
 //----Melody Harmony BOILERPLATE CODE____-----____---____--___-_____---
 //eachvoice should have their own oscillator array.
 
-function playNotes(notearray, oscillators,gains,time,eighthNoteTime,duration,accent, type,context)
+function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration,accent, type,context)
 {
 
     gains[lastOscUsed] = context.createGain();
     oscillators[lastOscUsed] = context.createOscillator();
+    eqs[lastOscUsed] = context.createBiquadFilter();
     oscillators[lastOscUsed].type = type;
     oscillators[lastOscUsed].frequency.value = notetoFreq(notearray[0]);
-    oscillators[lastOscUsed].connect(gains[lastOscUsed]);
+    oscillators[lastOscUsed].connect(eqs[lastOscUsed]);
+    eqs[lastOscUsed].type = "highshelf";
+    eqs[lastOscUsed].frequency.setValueAtTime(notetoFreq("F4"), context.currentTime);
+    eqs[lastOscUsed].gain.setValueAtTime(-20, context.currentTime);
+    eqs[lastOscUsed].q = 1.4;
+
+    eqs[lastOscUsed].connect(gains[lastOscUsed]);
+
+
+
     gains[lastOscUsed].connect(context.destination);
     gains[lastOscUsed].gain.setValueAtTime(0.3, time);
     gains[lastOscUsed].gain.exponentialRampToValueAtTime(0.0001,time + (eighthNoteTime*(duration+3)));
@@ -266,6 +321,15 @@ function notetoFreq(note){//[Note][Octave0-9]
     noteNumber = noteNumber + 1 + (12 * (octave -1))
   }
   return 440 * Math.pow(2,(noteNumber-49)/12)
+}
+
+function init_eqs(context,size)
+{
+  oscarray = [];
+  for (var i = 0; i < size; i++) {
+    oscarray[i] = context.createBiquadFilter();
+  }
+  return oscarray;
 }
 
 
@@ -370,9 +434,9 @@ function EventLoop(key,type,startTime)
     var minorcheck = 0;
     //while (eval_minor_nine(chordtones) == 0) //checks minor ninths
     //{
-      chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
-      chordtones = scatter(chordtones,1);
-      minorcheck+=1;
+      // chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
+      // chordtones = scatter(chordtones,1);
+      // minorcheck+=1;
     //}
     //console.log("Minor Ninth Check Count:" + minorcheck);
     for (var i = 0; i < PolyUnits.length; i++) {
@@ -389,14 +453,34 @@ function EventLoop(key,type,startTime)
       updateGraphicsSettings()
 
 
-     if (document.getElementById('automutate').checked)
+     if ((document.getElementById('automutate').checked))
      {
+      if ((barcount%2==0))
+      {
+
       mutatenumber = autoMutate(mutatenumber);
+      }
      }
 
+      barcount+=1;
+      if (barcount==7)
+      {
+        isPlaying=0;
+        var restart = function(){
+          isPlaying = 1;
+          console.log("frame update");
+          //changeTempo(updateTempo(),PolyUnits);
+          //updateGraphicsSettings();
+          barcount=0;
+          EventLoop(nextkey,type,context.currentTime,globalscale);
+        }
 
-        setTimeout(function(){EventLoop(nextkey,type,(startTime+(240/basetempo)),globalscale);},240000/basetempo)
-  //     
+        setTimeout(restart,startTime+(240000/basetempo));
+      }
+      else
+      {
+        setTimeout(function(){EventLoop(nextkey,type,(startTime+(240/basetempo)),globalscale);},(240000/basetempo));   
+      }
   	}
   else {
     console.log("done");
@@ -431,13 +515,13 @@ function ostinato(rhythm,notearray,tempo,startTime,type,duration)
         //play
          setTimeout(emitTriangle,1000*((time + i*eighthNoteTime)-context.currentTime));
 
-        playNotes(notearray,OstOsc,Gains,time + i*eighthNoteTime,eighthNoteTime,(durationadded),1,type,context);
+        playNotes(notearray,OstOsc,Gains,EQArray,time + i*eighthNoteTime,eighthNoteTime,(durationadded),1,type,context);
 
         break;
         case "i":
 
          setTimeout(emitTriangle,1000*((time + i*eighthNoteTime)-context.currentTime));
-        playNotes(notearray,OstOsc,Gains,time + i * eighthNoteTime,eighthNoteTime,(durationadded),0,type,context);
+        playNotes(notearray,OstOsc,Gains,EQArray,time + i * eighthNoteTime,eighthNoteTime,(durationadded),0,type,context);
         break;
 
         case "x":

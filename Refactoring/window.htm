@@ -54,10 +54,6 @@
       {
         intervalstack =4;
       }
-      else if (currentscale == MajorFlat6)
-      {
-        intervalstack =4;
-      }
       else
       {
         intervalstack=3;
@@ -113,11 +109,11 @@ function autoMutate(times)
     pol1 = Math.random() < 0.5 ? -1 : 1;
     pol2 = Math.random() < 0.5 ? -1 : 1;
     pol3 = Math.random() < 0.45 ? 1 : 0;
-    pol4 = Math.random() < 0.3 ? 1 : 0;
-    pol5 = Math.random() < 0.5 ? 1 : 0;
+    pol4 = Math.random() < 0.5 ? 1 : 0;
+    pol5 = Math.random() < 0.3 ? 1 : 0;
   var mutseed = getRndInteger(1,times*4);
   //console.log("times" + times);
-  if (mutseed>times*2) 
+  if (mutseed>times*1.5) 
   {
     if (pol5)
     {
@@ -143,10 +139,16 @@ function autoMutate(times)
     }
     else
     {
-    shufflenum= getRndInteger(1,PolyUnits.length);
-    console.log("Polyrhythm changed" + shufflenum);
+      shufflenum= getRndInteger(1,PolyUnits.length);
+      targets = []
+      for (var i = 0; i < shufflenum; i++)
+      {
+        target = getRndInteger(0,PolyUnits.length);
+        shufflePoly(target,target+1);
+        targets.push(target);
+      }
+        console.log(i+": Polyrhythms changed:" + targets);
 
-    shufflePoly(shufflenum,PolyUnits.length);
     }
 
     if (pol4)
@@ -154,22 +156,15 @@ function autoMutate(times)
       if (pol3 == 0)
       {
         if (PolyUnits.length>1){PolyUnits.pop()};
+        console.log("Last poly removed");
       }
-      else
-      {
-        if (PolyUnits.length <= 5){
 
-      PolyUnits.push(new PolyUnit(shuffleonePoly(),[],90,Math.random() >0.5 ?'sine':'triangle'));
-      console.log("New Poly Added")
-      viewPoly();
-        }
-        else
-        {
-          PolyUnits.pop();
-          console.log("Last poly removed")
-        }
+      else if (PolyUnits.length <= 5){
 
+       PolyUnits.push(new PolyUnit(shuffleonePoly(),["C4"],90,Math.random() >0.5 ?'sine':'triangle'));
+       console.log("New Poly Added")
       }
+      
     }
 
 
@@ -182,28 +177,10 @@ function autoMutate(times)
 }
 
 
-function spicy_shuffle()
-{
-
-    shufflePoly();
-    currtempo = document.getElementById('tempochange').value;
-    console.log(currtempo);
-    pol1 = Math.random() < 0.5 ? -1 : 1;
-    tempodiff = getRndInteger(4,23);
-
-    newtempo = parseInt(currtempo) + (pol1 * tempodiff);
-    console.log(newtempo);
-    changeTempo(newtempo, PolyUnits);
-    document.getElementById('tempochange').value = newtempo;
-    pol = Math.random() < 0.5 ? -1 : 1;
-    document.getElementById('key').value = key_transpose(document.getElementById('key').value,pol*7);
-
-}
-
 
 </script>
     
-    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,'triangle',context.currentTime,document.getElementById('scaleselect').value);expectedtime=context.currentTime;}">Start Generation</button>
+    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,'triangle',context.currentTime,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
   <button onclick="isPlaying = 0;">Stop Generation</button>
   <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
@@ -272,11 +249,11 @@ function spicy_shuffle()
 <br>
 
   Gravity Strength
-  <input type="text" name="gravity" value="0.00002" id ="grav">
+  <input type="text" name="gravity" value="0.00008" id ="grav">
 0.00190 default
 <br>
   Emitter Velocity Variance
-  <input type="number" name="variance" value=0.4 id ="velvar">
+  <input type="number" name="variance" value=0.7 id ="velvar">
 0.015 default
     <br>
     Rotation Matrix
