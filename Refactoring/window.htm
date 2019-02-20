@@ -11,6 +11,8 @@
   </head>
   <body>
     <script>
+  
+
   var beatarray;
   var notesarray;
   var tempo;
@@ -108,7 +110,7 @@ function autoMutate(times)
 {
     pol1 = Math.random() < 0.5 ? -1 : 1;
     pol2 = Math.random() < 0.5 ? -1 : 1;
-    pol3 = Math.random() < 0.45 ? 1 : 0;
+    pol3 = Math.random() < 0.3 ? 1 : 0;
     pol4 = Math.random() < 0.5 ? 1 : 0;
     pol5 = Math.random() < 0.3 ? 1 : 0;
   var mutseed = getRndInteger(1,times*4);
@@ -121,7 +123,7 @@ function autoMutate(times)
     currtempo = parseFloat(document.getElementById('tempochange').value);
     //console.log(currtempo);
     tempodiff = getRndInteger(5,15);
-
+    pol1 = currtempo < 70 ? 1 : pol1;
     newtempo = parseFloat(currtempo) + (pol1 * parseFloat(tempodiff));
     //console.log(newtempo);
     changeTempo(newtempo, PolyUnits);
@@ -155,9 +157,9 @@ function autoMutate(times)
 
     if (pol4 && (document.getElementById('autopoly').checked))
     {
-      if (pol3 == 0)
+      if (pol3)
       {
-        if (PolyUnits.length>2){PolyUnits.pop()};
+        if (PolyUnits.length>=3){PolyUnits.pop()};
         console.log("Last poly removed");
       }
 
@@ -190,7 +192,6 @@ function autoMutate(times)
   <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
   <input type="checkbox" id="automutate" checked=True> Auto
   <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
-  <button onclick="PolyUnits = [];applyupdate();">Clear Array</button>
 
   <button onclick="viewPoly()">View Polyrhythms</button>
 
@@ -265,7 +266,11 @@ function autoMutate(times)
     <input type="text" name="colormatrix" value="0.0,0.01,0.0" id ="emitcolor">
    
   <br>
-<script type="text/javascript">InitDemo();</script>
+<script type="text/javascript">
+document.getElementById('key').value = circleofFifths.randomElement();
+
+InitDemo();
+</script>
 
 
   </body>

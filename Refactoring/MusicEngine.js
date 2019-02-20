@@ -1,5 +1,6 @@
 var mutatenumber=3;
 var automutate_switch=1;
+var lastnotedegree = 1;
 var barcount=0;
 var expectedtime=0.0;
 var timediff = 0.0;
@@ -210,11 +211,8 @@ console.log(outputnotes);
   return outputnotes;
 }
 
-function randompolyrhythm(number,div)
+function randompolyrhythm(div)
 {
-  ra = [];
-  for (var j=0; j<number; j++)
-  {
     re = "";
     for (var i = 0; i < div; i++) {
       c = getRndInteger(1,8);
@@ -229,13 +227,54 @@ function randompolyrhythm(number,div)
         case 4: re += "xI"; break;
       }
     }
-    ra.push(re);
-  }
-  return ra;
+
+  return re;
 }
 
 
+function chordchanger(currentchord)
+{
+  var selectedchord;
+  switch(currentchord)
+  {
+    case 1:{
+      selectedchord = [1,1,4,5].randomElement();
+      break;
+    }
 
+    case 2:{
+      selectedchord = [5,3,5,4].randomElement();
+      break;
+    }
+
+    case 3:{
+      selectedchord = [3,1,6,6,4,4].randomElement();
+      break;
+    }
+
+    case 4:{
+      selectedchord = [1,1,4,5,2].randomElement();
+      break;
+    }
+
+    case 5:{
+      selectedchord = [1,1,4,6].randomElement();
+      break;
+    }
+
+    case 6:{
+      selectedchord = [1,1,4,2,2].randomElement();
+      break;
+    }
+
+    case 7:{
+      selectedchord = [3,5,3,1,1].randomElement();
+      break;
+    }
+  }
+
+  return selectedchord
+}
 
 
 //----Melody Harmony BOILERPLATE CODE____-----____---____--___-_____---
@@ -324,13 +363,13 @@ function shufflePoly(start,end)
 {
   cr = PolyUnits[0].rhythm.length/8;
   for (var i = start; i < end; i++) {
-    PolyUnits[i].rhythm = randompolyrhythm(3,getRndInteger(2,7))[0];
+    PolyUnits[i].rhythm = randompolyrhythm(getRndInteger(2,7));
     PolyUnits[i].cr = cr;
   }
 }
 function shuffleonePoly()
 {
-  return randompolyrhythm(3,getRndInteger(2,7))[0];
+  return randompolyrhythm(getRndInteger(2,7));
 }
 
 
@@ -343,17 +382,56 @@ function PolyTrigger(PolyArray,time)
   }
 }
 
+
+
 function EventLoop(key,startTime)
 {
 
   var basetempo = PolyUnits[0].basetempo;
   if (isPlaying == 1) {
 
-    notedegree = [1,2,3,4,5,6,7].randomElement();
-    setTimeout(() => {PolyTrigger(PolyUnits,context.currentTime)},startTime-context.currentTime);
 
-    chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
-    chordtones = scatter(chordtones,1);
+    var updateChords = function()
+    {
+      
+      
+      if (lastnotedegree == 5 || lastnotedegree ==  4)
+      {
+        if (Math.Random() < 0.5) //percent chance of keychange on 4 or 5
+        {
+          let keypol = Math.random() <0.5? 1:-1;
+          document.getElementById('key').value = 
+          key_transpose(document.getElementById('key').value,keypol*7);
+          console.log("Key changed")
+          notedegree = [1,1,1,6].randomElement();
+        }
+        else
+        {
+          notedegree = chordchanger(lastnotedegree);
+        }
+
+      }
+
+      else
+      {
+        notedegree = chordchanger(lastnotedegree);
+        
+      }
+      chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
+      chordtones = scatter(chordtones,1);
+      for (var i = 0; i < PolyUnits.length; i++)
+      {
+          PolyUnits[i].notes = [chordtones[i]];
+      }
+      console.log(lastnotedegree + "=>" + notedegree )
+      astnotedegree=notedegree;
+
+
+      
+      
+    
+
+    }
 
     //var minorcheck = 0;
     //while (eval_minor_nine(chordtones) == 0) //checks minor ninths
@@ -363,9 +441,9 @@ function EventLoop(key,startTime)
       // minorcheck+=1;
     //}
     //console.log("Minor Ninth Check Count:" + minorcheck);
-    for (var i = 0; i < PolyUnits.length; i++) {
-      PolyUnits[i].notes = [chordtones[i]];
-    }
+
+    
+    setTimeout(() => {updateChords();PolyTrigger(PolyUnits,context.currentTime)},startTime-context.currentTime);
     
       nextkey = updateKey();
       globalscale= updateScale();
@@ -382,7 +460,7 @@ function EventLoop(key,startTime)
       }
      }
       barcount+=1;
-      if (barcount>=3)
+      if (barcount<-1)
       {
         isPlaying=0;
 
@@ -400,7 +478,7 @@ function EventLoop(key,startTime)
       {
         setTimeout(function(){EventLoop(nextkey,(startTime+(240/basetempo)),globalscale)},(240000/basetempo));   
       }
-  	}
+    }
   else {
     console.log("done");
     barcount = 0;
@@ -416,7 +494,7 @@ function ostinato(rhythm,notearray,tempo,startTime,type,duration)
       let lookahead = 1;
       let durationadded = 0;
 
-      if (rhythm[i] != "o" && rhythm[i+1] == "o"){
+      if ((rhythm[i] == "i" || rhythm[i] == "I") && rhythm[i+1] == "o"){
         durationadded+=1;
         lookahead += 1;
 
