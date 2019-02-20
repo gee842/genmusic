@@ -59,65 +59,6 @@ function randomInitParticles(number,min,max)
   return outs;
 }
 
-function InitSquare(number,min,max)
-{
-  console.log(number,min,max)
-
-  outs = [];
-
-  for (var i = 0; i < number; i++) {
-    x = Math.random() * (max - min) + min;
-    y = Math.random() * (3 - 2) + 2;
-    z = Math.random() * (max - min) + min;
-    cr = Math.random()
-    cg = Math.random()
-    cb = Math.random()
-
-    outs.push(new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE));
-  }
-  return outs;
-
-}
-
-function EmitSquare(number,min,max)
-{
-
-  outs = [];
-  for (var i = 0; i < number; i++) {
-    x = Math.random() * (max - min) + min;
-    y = 4;
-    z = 0;
-    if (EMIT_COLOR[0] == 0)
-    {
-      cr = Math.random()
-    }
-    else {
-      cr = EMIT_COLOR[0];
-    }
-    if (EMIT_COLOR[1] == 0)
-    {
-      cb = Math.random()
-    }
-    else {
-      cb = EMIT_COLOR[1];
-    }
-    if (EMIT_COLOR[2] == 0)
-    {
-      cg = Math.random()
-    }
-    else {
-      cg = EMIT_COLOR[2];
-    }
-
-
-    part = new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE);
-     part.v[0] = ((Math.random() - 0.5) * 2 * VELOCITY_VARIANCE) ;
-     part.v[1] = ((Math.random() - 0.5) * 2 * VELOCITY_VARIANCE) ;
-     part.v[2] = ((Math.random() - 0.5) * 2 * VELOCITY_VARIANCE) ;
-    outs.push(part);
-  }
-  return outs;
-}
 
 
 
@@ -125,11 +66,6 @@ function EmitSquare(number,min,max)
 // particleList.push( new Particle(-1.0,1.0,-1.0,[0.5,0.5,0.5]));
 // particleList.push( new Particle(1.0,1.0,-1.0,[0.5,0.5,0.5]));
 
-function switchColor(gl)
-{
-  gl.clearColor(Math.random() * 256,Math.random() * 230,Math.random() * 256, 1.0)
-  //gl.clearColor(230,0,240, 1.0);
-}
 
 function updateParticles(g)
 {
@@ -263,7 +199,7 @@ var InitDemo = function(){
   {
     gl = canvas.getContext('experimental-webgl');
   }
-  canvas.addEventListener("click", switchColor(gl), false);
+
 
   gl.clearColor(1.0,0.7,1.0,1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -371,7 +307,7 @@ var InitDemo = function(){
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
 
-  gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0)
+  gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
   var angle = 0;
   totalFrames = 0;
   startTime = performance.now();

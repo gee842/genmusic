@@ -14,7 +14,7 @@
   var beatarray;
   var notesarray;
   var tempo;
-  var timez;
+
 
 
     function viewPoly()
@@ -139,7 +139,9 @@ function autoMutate(times)
     }
     else
     {
-      shufflenum= getRndInteger(1,PolyUnits.length);
+      if (document.getElementById('autopoly').checked)
+      {
+            shufflenum= getRndInteger(1,PolyUnits.length);
       targets = []
       for (var i = 0; i < shufflenum; i++)
       {
@@ -148,10 +150,10 @@ function autoMutate(times)
         targets.push(target);
       }
         console.log(i+": Polyrhythms changed:" + targets);
-
+      }
     }
 
-    if (pol4)
+    if (pol4 && (document.getElementById('autopoly').checked))
     {
       if (pol3 == 0)
       {
@@ -180,14 +182,14 @@ function autoMutate(times)
 
 </script>
     
-    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,context.currentTime,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
+    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
   <button onclick="isPlaying = 0;">Stop Generation</button>
   <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
    <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],90,Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
-  <input type="checkbox" id="automutate" checked=True> Auto<br>
-
+  <input type="checkbox" id="automutate" checked=True> Auto
+  <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
   <button onclick="PolyUnits = [];applyupdate();">Clear Array</button>
 
   <button onclick="viewPoly()">View Polyrhythms</button>
@@ -217,7 +219,7 @@ function autoMutate(times)
 <th>
   <p>tempo</p> 
   <div class="slidecontainer">
-  <input type="range" min=60 max=150 value=70 class="slider" id="tempochange">
+  <input type="range" min=35 max=160 value=70 class="slider" id="tempochange">
 </div>
   <input type="text" name="key" value="D" id ="key">
   <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
