@@ -307,17 +307,17 @@ var InitDemo = function(){
     totalFrames++;
     angle = performance.now() / 2000 / 6 * 2 * Math.PI;
     elapsed = performance.now() - startTime;
-    if (elapsed > 1000000)
+    if (elapsed > 250)
     {
       //gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
+      fps = totalFrames/(elapsed/1000);
+      document.getElementById("fps").value = fps;
       totalFrames = 0;
       startTime = performance.now();
       document.getElementById("vcount").value = particleList.length;
-
     }
 
-    fps = totalFrames/(elapsed/1000);
-    document.getElementById("fps").value = fps;
+    
 
 
     mat4.rotate(worldMatrix, identityMatrix, angle,[AUTO_ROTATE[0],AUTO_ROTATE[1], AUTO_ROTATE[2]]);

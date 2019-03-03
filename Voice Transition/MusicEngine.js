@@ -589,7 +589,6 @@ function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration
 
     if (accent)
     {
-    	console.log("I")
     	gains[lastOscUsed].gain.setValueAtTime(0.5, time);
     }
     else
@@ -597,7 +596,7 @@ function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration
     	gains[lastOscUsed].gain.setValueAtTime(0.13, time);
     }
     
-    gains[lastOscUsed].gain.exponentialRampToValueAtTime(0.0001,time + (eighthNoteTime*(duration+5)));
+    gains[lastOscUsed].gain.exponentialRampToValueAtTime(0.0001,(time + eighthNoteTime*(duration+1)) + (eighthNoteTime*(duration+4)));
     oscillators[lastOscUsed].start(time);
     oscillators[lastOscUsed].stop(time + eighthNoteTime*(duration+1));
     lastOscUsed+=1;
