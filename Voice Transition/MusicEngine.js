@@ -266,7 +266,7 @@ function randompolyrhythm(div)
         case 1: re += "Io"; break;
         case 2: re += "io"; break;
         case 4: re += "Io"; break;
-        case 5: re += "ix"; break;
+        case 5: re += "xi"; break;
         case 6: re += "ix"; break;
         case 7: re += "xx"; break;
         case 3: re += "xi"; break;
@@ -326,6 +326,8 @@ function chordchanger(currentchord)
 //Input: Previous Notes, Target Chord | Output: Next notes
 function voice_seperation(key,currentdegree,interval,number,scale)
 {
+	  upperb = 7;
+	  lowerb = 2;
 	  notes = getScale(key,scale);
 	  chordtones = [];
 	  chordcache = [];
@@ -368,7 +370,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 
 	  		if ((leftdist <= rightdist) && (leftdist <= samedist))
 	  		{
-	  			if (octave > 3)
+	  			if (octave > lowerb)
 	  			{
 	  				chordtones[i] = chordtones[i]+ (octave-1);
 	  			}
@@ -380,7 +382,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  		} 
 	  		else if ((rightdist <= leftdist) && (rightdist <= samedist))
 	  		{
-	  			if (octave < 7)
+	  			if (octave < upperb)
 	  			{
 	  				chordtones[i] = chordtones[i]+ (octave+1);
 	  			}
@@ -433,7 +435,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 
 	  		if ((leftdist <= rightdist) && (leftdist <= samedist))
 	  		{
-	  			if (octave > 3)
+	  			if (octave > lowerb)
 	  			{
 	  				chordtones[i] = chordtones[i]+ (octave-1);
 	  			}
@@ -446,7 +448,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  		} 
 	  		else if ((rightdist <= leftdist) && (rightdist <= samedist))
 	  		{
-	  			if (octave < 7)
+	  			if (octave < upperb)
 	  			{
 	  				chordtones[i] = chordtones[i]+ (octave+1);
 	  			}
@@ -503,7 +505,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 
 	  		if ((leftdist <= rightdist) && (leftdist <= samedist))
 	  		{
-	  			if (octave > 3)
+	  			if (octave > lowerb)
 	  			{
 	  				chordtones[i] = chordtones[i]+ (octave-1);
 	  			}
@@ -516,7 +518,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  		} 
 	  		else if ((rightdist <= leftdist) && (rightdist <= samedist))
 	  		{
-	  			if (octave < 7)
+	  			if (octave < upperb)
 	  			{
 	  				chordtones[i] = chordtones[i]+ (octave+1);
 	  			}
@@ -565,7 +567,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 //----Melody Harmony BOILERPLATE CODE____-----____---____--___-_____---
 //eachvoice should have their own oscillator array.
 
-function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration,accent, type,context)
+function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration,accent,type,context)
 {
 
     gains[lastOscUsed] = context.createGain();
@@ -584,8 +586,18 @@ function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration
 
 
     gains[lastOscUsed].connect(context.destination);
-    gains[lastOscUsed].gain.setValueAtTime(0.3, time);
-    gains[lastOscUsed].gain.exponentialRampToValueAtTime(0.0001,time + (eighthNoteTime*(duration+3)));
+
+    if (accent)
+    {
+    	console.log("I")
+    	gains[lastOscUsed].gain.setValueAtTime(0.5, time);
+    }
+    else
+    {
+    	gains[lastOscUsed].gain.setValueAtTime(0.13, time);
+    }
+    
+    gains[lastOscUsed].gain.exponentialRampToValueAtTime(0.0001,time + (eighthNoteTime*(duration+5)));
     oscillators[lastOscUsed].start(time);
     oscillators[lastOscUsed].stop(time + eighthNoteTime*(duration+1));
     lastOscUsed+=1;
