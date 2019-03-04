@@ -69,6 +69,10 @@ function updateParticles(g)
   }
 
   for (var i = 0; i < particleList.length; i++) {
+    if ((particleList[i].t) <= 0)
+    {
+      removal.push(i);
+    }
     particleList[i].v[1] -= g + (Math.random() - 0.5) * 2 * devianceg;
     particleList[i].v[0] -= (Math.random() - 0.5) * 2 * deviancev;
     particleList[i].v[2] -= (Math.random() - 0.5) * 2 * deviancev;
@@ -80,12 +84,10 @@ function updateParticles(g)
     particleList[i].t -= 1;
 
 
-    if ((particleList[i].t) <= 0)
-    {
-      removal.push(i);
-    }
+    
   }
   for (var j = 0; j < removal.length; j++) {
+    removal[j] = null;
     particleList.splice(removal[j],SHAPE_VERTEX);
 
   }
@@ -111,15 +113,6 @@ function giveVertexBuffer(particles)
   return outp;
 }
 
-function reverseVelocities(particles)
-{
-  for (var i = 0; i < particles.length; i++) {
-
-    particles[i].v[0] = 0 - particles[i].v[0];
-    particles[i].v[1] = 0 - particles[i].v[1]
-    particles[i].v[2] = 0 - particles[i].v[2]
-  }
-}
 
 function giveParticleOrder(particles)
 {
@@ -131,19 +124,8 @@ function giveParticleOrder(particles)
   return out;
 }
 
-function setVelocity(particle,vel)
-{
-  particle.v = vel;
-}
-function randomVelocities(particles,min,max)
-{
-  for (var i = 0; i < particles.length; i++) {
 
-    particles[i].v[0] = Math.random() * (max - min) + min;
-    particles[i].v[1] = Math.random() * (max - min) + min;
-    particles[i].v[2] = Math.random() * (max - min) + min;
-  }
-}
+
 
 
 

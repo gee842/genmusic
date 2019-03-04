@@ -20,7 +20,7 @@ const Octatonic2 = 'STSTSTST';
 const MajorFlat6 = 'TTSTSSTS';
 const circleofFifths = ["C","G","D","A","E","B","F#","C#","G#","D#","A#","F"];
 var isPlaying = 0;
-context = new (window.AudioContext || window.webkitAudioContext);
+var context = new (window.AudioContext || window.webkitAudioContext);
 var renderstart = context.currentTime;
 const OstOsc = init_osc(context,'sine',20);
 const Gains = init_gain(context,20);
@@ -259,18 +259,22 @@ function scatter(inputnotes,scat)
 
 function randompolyrhythm(div)
 {
+
     re = "";
     for (var i = 0; i < div; i++) {
-      c = getRndInteger(1,8);
+      c = getRndInteger(1,12);
       switch (c) {
         case 1: re += "Io"; break;
         case 2: re += "io"; break;
-        case 4: re += "Io"; break;
+        case 4: re += "ii"; break;
         case 5: re += "xi"; break;
         case 6: re += "ix"; break;
         case 7: re += "xx"; break;
         case 3: re += "xi"; break;
-        case 4: re += "xI"; break;
+        case 8: re += "xI"; break;
+        case 9: re += "Ii"; break;
+        case 10: if (i < div-1){re += "Iooo"; i+=1; console.log("ooo")} else{re+="ii";} break;
+        case 11: re += "iI"; break;
       }
     }
 
@@ -329,6 +333,8 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  upperb = 7;
 	  lowerb = 2;
 	  notes = getScale(key,scale);
+	  chordtones = null;
+	  chordcache = null;
 	  chordtones = [];
 	  chordcache = [];
 	  for (var i = 0; i < number; i++) {
@@ -570,6 +576,10 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 function playNotes(notearray, oscillators,gains,eqs,time,eighthNoteTime,duration,accent,type,context)
 {
 
+	gains[lastOscUsed] = null;
+	oscillators[lastOscUsed] = null;
+	eqs[lastOscUsed] = null;
+
     gains[lastOscUsed] = context.createGain();
     oscillators[lastOscUsed] = context.createOscillator();
     eqs[lastOscUsed] = context.createBiquadFilter();
@@ -659,6 +669,8 @@ function shufflePoly(start,end)
 {
   cr = PolyUnits[0].rhythm.length/8;
   for (var i = start; i < end; i++) {
+  	PolyUnits[i].rhythm = null
+    PolyUnits[i].cr = null;
     PolyUnits[i].rhythm = randompolyrhythm(getRndInteger(2,7));
     PolyUnits[i].cr = cr;
   }
@@ -687,6 +699,7 @@ function EventLoop(key,startTime)
   if (isPlaying == 1) {
 
 
+  	var updateChords = null;
     var updateChords = function()
     {
       
@@ -740,6 +753,7 @@ function EventLoop(key,startTime)
 
       for (var i = 0; i < PolyUnits.length; i++)
       {
+      		PolyUnits[i].notes = null;
           PolyUnits[i].notes = [global_previous_chords[i]];
       }
       console.log(lastnotedegree + "=>" + notedegree )

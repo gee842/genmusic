@@ -66,7 +66,7 @@
 <input type="text" name="fps" value="0" id ="fps">
 <input type="text" name="vcount" value="0" id ="vcount">
 <br>
-<canvas id="glCanvas" width="900" height="700">
+<canvas id="glCanvas" width="1600" height="900">
   Browser Unsupported
 </canvas>
 <br>
@@ -165,7 +165,7 @@ function autoMutate(times)
 
       else if (PolyUnits.length <= 5){
 
-       PolyUnits.push(new PolyUnit(shuffleonePoly(),["C4"],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));
+       PolyUnits.push(new PolyUnit(shuffleonePoly(),["C4"],(document.getElementById('tempochange').value),Math.random() >0.7 ?'sine':'triangle'));
        console.log("New Poly Added")
       }
       
@@ -181,10 +181,10 @@ function autoMutate(times)
 }
 
 
-
 </script>
+
     
-    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
+    <button onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
   <button onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
   <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
@@ -247,7 +247,7 @@ function autoMutate(times)
 
   <br>
   time to live
-  <input type="number" name="ttl" value=550 id ="particlelife">
+  <input type="number" name="ttl" value=320 id ="particlelife">
 130 default
 <br>
 
