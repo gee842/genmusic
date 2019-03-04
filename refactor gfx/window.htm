@@ -127,7 +127,7 @@ function autoMutate(times)
     newtempo = parseFloat(currtempo) + (pol1 * parseFloat(tempodiff));
     //console.log(newtempo);
     changeTempo(newtempo, PolyUnits);
-    parseInt(document.getElementById('tempochange').value) = (newtempo);
+    (document.getElementById('tempochange').value) = (newtempo);
 
     console.log("Tempo Changed: " + (pol1*tempodiff));
 
@@ -165,8 +165,8 @@ function autoMutate(times)
 
       else if (PolyUnits.length <= 5){
 
-       PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.7 ?'sine':'triangle');
-       console.log("New Poly Added");
+       PolyUnits.push(new PolyUnit(shuffleonePoly(),["C4"],(document.getElementById('tempochange').value),Math.random() >0.7 ?'sine':'triangle'));
+       console.log("New Poly Added")
       }
       
     }
@@ -181,7 +181,6 @@ function autoMutate(times)
 }
 
 
-//PolyUnit(rhythm,notes,basetempo,type,voicenumber)
 </script>
 
     
@@ -189,7 +188,7 @@ function autoMutate(times)
   <button onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
   <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
-   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.7 ?'sine':'triangle');console.log('-');viewPoly();">Push Random Layer</button>
+   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
   <input type="checkbox" id="automutate" checked=True> Auto
   <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
@@ -239,10 +238,10 @@ function autoMutate(times)
 
 
   <select id="drawmode">
-    <option value="gl.POINTS">Points</option>
     <option value="gl.LINE_STRIP">Lines Connect</option>
     <option value="gl.TRIANGLES">Triangle</option>
     <option value="gl.LINES">Lines</option>
+    <option value="gl.POINTS">Points</option>
 
   </select>
 

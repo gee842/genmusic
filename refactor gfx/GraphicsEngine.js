@@ -31,6 +31,88 @@ var Particle = function(x,y,z,c,t){
 //MOUUSE CONTROLS
 
 
+function squareRandom(number,min,max,voicelocation)
+{
+
+  let outs = [];
+  var x,y,z,cr,cg,cb;
+  //4 locations +x,+z, +x,-z , +z,-x, -x,-z
+
+  squarelocation = voicelocation % 4;
+
+  switch(squarelocation)
+  {
+  	case 0: 
+
+  	for (var i = 0; i < number; i++) {
+	    x = Math.random() * (max - min) + min + min
+	    y = Math.random() * (max - min) + min
+	    z = Math.random() * (max - min) + min + min
+	    cr = PolyUnits[voicelocation].colorred;
+      cg = PolyUnits[voicelocation].colorblue;
+      cb = PolyUnits[voicelocation].colorgreen;
+
+	    outs.push(new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE));
+  	} 
+  	break;
+
+    case 1: 
+
+  	for (var i = 0; i < number; i++) {
+	    x = Math.random() * (max - min) + min + min
+	    y = Math.random() * (max - min) + min
+	    z = Math.random() * (max - min) 
+	    cr = PolyUnits[voicelocation].colorred;
+      cg = PolyUnits[voicelocation].colorblue;
+      cb = PolyUnits[voicelocation].colorgreen;
+
+	    outs.push(new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE));
+  	} 
+  	break;
+
+  	case 2: 
+
+  	for (var i = 0; i < number; i++) {
+	    x = Math.random() * (max - min) 
+	    y = Math.random() * (max - min) + min
+	    z = Math.random() * (max - min) 
+	    cr = PolyUnits[voicelocation].colorred;
+      cg = PolyUnits[voicelocation].colorblue;
+      cb = PolyUnits[voicelocation].colorgreen;
+
+	    outs.push(new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE));
+  	} 
+  	break;
+
+  	case 3: 
+
+  	for (var i = 0; i < number; i++) {
+	    x = Math.random() * (max - min) 
+	    y = Math.random() * (max - min) + min
+	    z = Math.random() * (max - min) + min + min
+	    cr = PolyUnits[voicelocation].colorred;
+      cg = PolyUnits[voicelocation].colorblue;
+      cb = PolyUnits[voicelocation].colorgreen;
+
+	    outs.push(new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE));
+  	} 
+  	break;
+
+
+
+  }
+
+  
+  return outs;
+}
+
+
+function emitLocation(voicelocation)
+{
+	//get locations
+	particleList = particleList.concat(squareRandom(EMIT_RATE,1.5,-1.5,voicelocation));
+}
+
 
 function emitTriangle()
 {
@@ -43,7 +125,7 @@ function emitTriangle()
 function randomInitParticles(number,min,max)
 {
 
-  outs = [];
+  let outs = [];
 
   for (var i = 0; i < number; i++) {
     x = Math.random() * (max - min) + min
@@ -96,7 +178,7 @@ function updateParticles(g)
 function giveVertexBuffer(particles)
 {
   if (!particles) return [];
-  var outp = [];
+  let outp = [];
   var els = [];
   for (var i = 0; i < particles.length; i++) {
     outp.push(particles[i].x);
@@ -111,30 +193,18 @@ function giveVertexBuffer(particles)
   return outp;
 }
 
-function reverseVelocities(particles)
-{
-  for (var i = 0; i < particles.length; i++) {
-
-    particles[i].v[0] = 0 - particles[i].v[0];
-    particles[i].v[1] = 0 - particles[i].v[1]
-    particles[i].v[2] = 0 - particles[i].v[2]
-  }
-}
 
 function giveParticleOrder(particles)
 {
   if (!particles) return [];
-  var out = [];
+  let out = [];
   for (var i = 0; i < particles.length; i++) {
     out.push(i);
   }
   return out;
 }
 
-function setVelocity(particle,vel)
-{
-  particle.v = vel;
-}
+
 function randomVelocities(particles,min,max)
 {
   for (var i = 0; i < particles.length; i++) {
@@ -184,8 +254,8 @@ var InitDemo = function(){
 
 
 
-  var canvas = document.querySelector('#glCanvas');
-  var gl = canvas.getContext('webgl');
+  const canvas = document.querySelector('#glCanvas');
+  const gl = canvas.getContext('webgl');
   if (!gl)
   {
     gl = canvas.getContext('experimental-webgl');
@@ -199,8 +269,8 @@ var InitDemo = function(){
   gl.frontFace(gl.CCW);
   gl.cullFace(gl.BACK);
 
-  var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(vertexShader,vertexShaderText);
   gl.shaderSource(fragmentShader,fragmentShaderText);
 
@@ -218,7 +288,7 @@ var InitDemo = function(){
 
   //creates a program:
 
-  var program = gl.createProgram();
+  let program = gl.createProgram();
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
@@ -289,8 +359,6 @@ var InitDemo = function(){
   gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
   gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
-  var xRotationMatrix = new Float32Array(16);
-  var yRotationMatrix = new Float32Array(16);
 
   //MAIN RENDER LOOP
   var identityMatrix = new Float32Array(16);
