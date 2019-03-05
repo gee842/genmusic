@@ -80,7 +80,6 @@ function updateGraphicsSettings()
   DRAW_MODE = document.getElementById("drawmode").value;
 
   //SHAPE_VERTEX = document.getElementById("drawnum").value;
-  EMIT_RATE = document.getElementById("particlenum").value;
   AUTO_ROTATE = document.getElementById("rotatematrix").value.split(',').map(Number);
   EMIT_COLOR = document.getElementById("emitcolor").value.split(',').map(Number);
   PARTICLE_LIFE = document.getElementById("particlelife").value;
@@ -88,20 +87,22 @@ function updateGraphicsSettings()
   VELOCITY_VARIANCE = document.getElementById("velvar").value;
   switch(DRAW_MODE) {
     case "gl.LINES":
-        SHAPE_VERTEX = 2
+        SHAPE_VERTEX = 2;
+        EMIT_RATE = 2;
         break;
     case "gl.TRIANGLES":
         SHAPE_VERTEX = 3
+        EMIT_RATE = 3;
         break;
     case "gl.POINTS":
         SHAPE_VERTEX = 1
+        EMIT_RATE = 1;
         break;
     case "gl.LINE_STRIP":
         SHAPE_VERTEX = 2
+        EMIT_RATE = 1;
         break;
-    case "gl.QUADs":
-        SHAPE_VERTEX = 4
-        break;
+
   }
 
 }
@@ -231,8 +232,7 @@ function autoMutate(times)
 </tr>
 </table>
   <br>
-    Number of Emitters
-    <input type="number" name="emitters" value=1 id ="particlenum">
+
     <br>
     Draw Mode
 

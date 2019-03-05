@@ -1,3 +1,5 @@
+	
+
 var mutatenumber=3;
 var automutate_switch=1;
 var lastnotedegree = 1;
@@ -39,28 +41,27 @@ function PolyUnit(rhythm,notes,basetempo,type){
   this.type = type;
   this.voicenumber = PolyUnits.length;
   this.cr = (rhythm.length/8);
-  this.colorred = Math.random() * (0.9-0.2) + 0.2;
-  this.colorblue = Math.random() * (0.9-0.2) + 0.2;
-  this.colorgreen = Math.random() * (0.9-0.2) + 0.2;
+  this.colorred = Math.random() * (0.9-0.5) + 0.5;
+  this.colorblue = Math.random() * (0.9-0.5) + 0.5;
+  this.colorgreen = Math.random() * (0.9-0.5) + 0.5;
 }
 PolyUnit.prototype.play = function(startTime){
   ostinato(this.rhythm,this.notes[0],this.basetempo*this.cr,startTime,this.type,this.voicenumber);
 }
 
 
-var ff = new PolyUnit("ioix",[],110,"sine")
-var ee = new PolyUnit("ixxi",[],110,"triangle")
-var dd = new PolyUnit("xxixIo",[],110,"triangle")
-var cc = new PolyUnit("ixIoixixIoix",[],110,"triangle")
-var aa = new PolyUnit("xxixxxix",[],110,"sine")
+// var ee = new 
+// var dd = 
+// var cc = new PolyUnit("ixIoixixIoix",[],110,"triangle")
+// var aa = new PolyUnit("xxixxxix",[],110,"sine")
 
 
 
- PolyUnits.push(ff);
- PolyUnits.push(ee);
- PolyUnits.push(dd);
- PolyUnits.push(cc);
- PolyUnits.push(aa);
+ PolyUnits.push(new PolyUnit("ioix",[],110,"sine"));
+ PolyUnits.push(new PolyUnit("ixxi",[],110,"triangle"));
+ // PolyUnits.push(new PolyUnit("xxixIo",[],110,"triangle"));
+ // PolyUnits.push(new PolyUnit("ixIoixixIoix",[],110,"triangle"));
+ PolyUnits.push(new PolyUnit("xxixxxix",[],110,"sine"));
 
 Array.prototype.randomElement = function () {
     return this[Math.floor(Math.random() * this.length)]
@@ -722,7 +723,7 @@ function EventLoop(key,startTime)
           document.getElementById('key').value = 
           key_transpose(document.getElementById('key').value,keypol*7);
           console.log("Key changed")
-          notedegree = [1,1,6,6].randomElement();
+          notedegree = [1,1,6,6,4].randomElement();
         }
         else
         {
