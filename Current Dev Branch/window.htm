@@ -215,13 +215,10 @@ function autoMutate(times)
 </select>
  
 
-  <br>
+
   <input type="checkbox" id="automutate" checked=True> Auto Key Tempo
   <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
   <input type="checkbox" id="autorotate" checked=True> Auto Rotate<br>
-
-   Draw Mode
-
 
   <select id="drawmode">
     <option value="gl.POINTS">Points</option>
@@ -230,7 +227,17 @@ function autoMutate(times)
     <option value="gl.LINES">Lines</option>
 
   </select>
+  <br>
 
+
+
+
+ 
+
+  <textarea rows="6" cols="14" id ="polydisplay" value =""></textarea>
+  <input type="text" name="chorddisplay" value="" id ="chorddisplay">
+
+   
   <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
 
 
@@ -263,6 +270,7 @@ document.getElementById('key').value = circleofFifths.randomElement();
 
 InitDemo();
 </script>
+
 
 
   </body>
