@@ -27,6 +27,47 @@ var Particle = function(x,y,z,c,t){
   this.t = t;
 }
 
+function clearParticles()
+{
+  console.log(i);
+  for (var i = 0; i <= particleList.length; i++)
+  {
+    removal.push(i); 
+  }
+}
+
+
+function pushParticle(x,y,z,[cr,cg,cb],lifespan)
+{
+  return new Particle(x, y, z, [cr, cg, cb], lifespan);
+}
+
+
+//r * sin(theta) = x, r* sin(90-theta) = y, where theta is 360/voices, and r is radius
+function circlePlace(number,min,max,voicelocation,lifespan,totalvoices,radius)
+{
+  let theta = 360.0/totalvoices;
+  let x, y, z, cr, cg, cb;
+  let outs = []
+  if (voicelocation > PolyUnits.length) { voicelocation -= 1;console.log("hmm") }
+  for (var i = 0; i<number; i++)
+  {
+    x = Math.sin((theta * voicelocation) * Math.PI / 180) * radius;
+    y = Math.random() * (max - min) + min
+    z = Math.sin((90-(theta*voicelocation)) * Math.PI / 180) * radius;
+    x = Math.random() * (max - min) + min + x
+    z = Math.random() * (max - min) + min + z
+    cr = PolyUnits[voicelocation].colorred;
+    cg = PolyUnits[voicelocation].colorblue;
+    cb = PolyUnits[voicelocation].colorgreen;
+    outs.push(new Particle(x, y, z, [cr, cg, cb], lifespan));
+  }
+
+return outs;
+
+
+}
+
 
 var varydist = 2;
 function squareRandom(number,min,max,voicelocation,lifespan)
@@ -37,7 +78,7 @@ function squareRandom(number,min,max,voicelocation,lifespan)
   //4 locations +x,+z, +x,-z , +z,-x, -x,-z
 
   squarelocation = voicelocation % 4;
-
+  if (voicelocation > PolyUnits.length){voicelocation-=1}
   switch(squarelocation)
   {
   	case 0: 
@@ -108,7 +149,7 @@ function squareRandom(number,min,max,voicelocation,lifespan)
 function emitLocation(voicelocation)
 {
 	//get locations
-	particleList = particleList.concat(squareRandom(EMIT_RATE,0.5,-0.5,voicelocation,PARTICLE_LIFE));
+	particleList = particleList.concat(circlePlace(EMIT_RATE,0.5,-0.5,voicelocation,PARTICLE_LIFE,PolyUnits.length,2));
 }
 
 
@@ -361,7 +402,7 @@ var InitDemo = function(){
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
 
-  gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
+  gl.clearColor(Math.random() / 0.2, Math.random() / 0.5, 0.8, 0.8);
   var angle = 0;
   var totalFrames = 0;
   var startTime = performance.now();

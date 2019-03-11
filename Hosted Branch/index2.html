@@ -2,9 +2,9 @@
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 <html>
 
-        <script src="MusicEngine.js"></script>
+        <script src="music_engine.js"></script>
         <script src="gl-matrix.js"></script>
-<script src="GraphicsEngine.js"></script>
+<script src="gfxengine.js"></script>
 
   <head>
 
@@ -12,6 +12,19 @@
   <body>
     <script>
   
+  var canvas = document.getElementById('glCanvas');
+ 
+function fullscreen(){
+           var el = document.getElementById('glCanvas');
+ 
+           if(el.webkitRequestFullScreen) {
+               el.webkitRequestFullScreen();
+           }
+          else {
+             el.mozRequestFullScreen();
+          }            
+}
+
 
   var beatarray;
   var notesarray;
@@ -66,7 +79,7 @@
 <input type="text" name="fps" value="0" id ="fps">
 <input type="text" name="vcount" value="0" id ="vcount">
 <br>
-<canvas id="glCanvas" width="900" height="700">
+<canvas ondblclick="fullscreen()" id="glCanvas" width="1600" height="900">
   Browser Unsupported
 </canvas>
 <br>
@@ -79,29 +92,29 @@ function updateGraphicsSettings()
   startTime = performance.now();
   DRAW_MODE = document.getElementById("drawmode").value;
 
+  AUTO_ROTATE_TOGGLE = document.getElementById('autorotate').checked;
+
+
   //SHAPE_VERTEX = document.getElementById("drawnum").value;
-  EMIT_RATE = document.getElementById("particlenum").value;
-  AUTO_ROTATE = document.getElementById("rotatematrix").value.split(',').map(Number);
-  EMIT_COLOR = document.getElementById("emitcolor").value.split(',').map(Number);
-  PARTICLE_LIFE = document.getElementById("particlelife").value;
-  GRAVITY_STRENGTH = parseFloat(document.getElementById("grav").value);
-  VELOCITY_VARIANCE = document.getElementById("velvar").value;
+
   switch(DRAW_MODE) {
     case "gl.LINES":
-        SHAPE_VERTEX = 2
+        SHAPE_VERTEX = 2;
+        EMIT_RATE = 2;
         break;
     case "gl.TRIANGLES":
         SHAPE_VERTEX = 3
+        EMIT_RATE = 3;
         break;
     case "gl.POINTS":
         SHAPE_VERTEX = 1
+        EMIT_RATE = 1;
         break;
     case "gl.LINE_STRIP":
         SHAPE_VERTEX = 2
+        EMIT_RATE = 1;
         break;
-    case "gl.QUADs":
-        SHAPE_VERTEX = 4
-        break;
+
   }
 
 }
@@ -159,13 +172,14 @@ function autoMutate(times)
     {
       if (pol3)
       {
-        if (PolyUnits.length>=3){PolyUnits.pop()};
+        if (PolyUnits.length>3){PolyUnits.pop()};
         console.log("Last poly removed");
       }
 
       else if (PolyUnits.length <= 5){
 
-       PolyUnits.push(new PolyUnit(shuffleonePoly(),["C4"],90,Math.random() >0.5 ?'sine':'triangle'));
+
+       PolyUnits.push(new PolyUnit(shuffleonePoly(),[],parseFloat(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));
        console.log("New Poly Added")
       }
       
@@ -181,33 +195,48 @@ function autoMutate(times)
 }
 
 
-
 </script>
+
     
-    <button onclick="if(!isPlaying){isPlaying = 1;changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);barcount=0;}">Start Generation</button>
-  <button onclick="isPlaying = 0;">Stop Generation</button>
+    <button onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
+  <button onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
   <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
    <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
-   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],90,Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
+   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
-  <input type="checkbox" id="automutate" checked=True> Auto
-  <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
-
-  <button onclick="viewPoly()">View Polyrhythms</button>
-
-  <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
-
-<select id="scaleselect">
-  <option value="TSTTSTT">MinorScale</option>
+  <select id="scaleselect">
   <option value="TTSTTTS">MajorScale</option>
+  <option value="TSTTSTT">MinorScale</option>
   <option value="TTTTTTT">WholeTone</option>
   <option value="TSTSTSTS">Octatonic1</option>
   <option value="STSTSTST">Octatonic2</option>
   <option value="TTSTSSTS">MajorFlat6</option>
 
 </select>
+ 
 
-<table style="width:60%">
+  <br>
+  <input type="checkbox" id="automutate" checked=True> Auto Key Tempo
+  <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
+  <input type="checkbox" id="autorotate" checked=True> Auto Rotate<br>
+
+  <input type="text" name="chorddisplay" value="" id ="chorddisplay">
+
+   Draw Mode
+
+
+  <select id="drawmode">
+    <option value="gl.POINTS">Points</option>
+    <option value="gl.LINE_STRIP">Lines Connect</option>
+    <option value="gl.TRIANGLES">Triangle</option>
+    <option value="gl.LINES">Lines</option>
+
+  </select>
+
+  <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
+
+
+<table style="width:30%">
   <tr>
   <th>
   <p>Rhythm cell Input</p>
@@ -220,7 +249,7 @@ function autoMutate(times)
 <th>
   <p>tempo</p> 
   <div class="slidecontainer">
-  <input type="range" min=35 max=160 value=70 class="slider" id="tempochange">
+  <input type="range" min=55 max=170 value=110 class="slider" id="tempochange">
 </div>
   <input type="text" name="key" value="D" id ="key">
   <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
@@ -230,42 +259,7 @@ function autoMutate(times)
   <br>
 </tr>
 </table>
-  <br>
-    Number of Emitters
-    <input type="number" name="emitters" value=1 id ="particlenum">
-    <br>
-    Draw Mode
-
-
-  <select id="drawmode">
-    <option value="gl.LINE_STRIP">Lines Connect</option>
-    <option value="gl.TRIANGLES">Triangle</option>
-    <option value="gl.LINES">Lines</option>
-    <option value="gl.POINTS">Points</option>
-
-  </select>
-
-  <br>
-  time to live
-  <input type="number" name="ttl" value=550 id ="particlelife">
-130 default
-<br>
-
-  Gravity Strength
-  <input type="text" name="gravity" value="0.00008" id ="grav">
-0.00190 default
-<br>
-  Emitter Velocity Variance
-  <input type="number" name="variance" value=0.7 id ="velvar">
-0.015 default
-    <br>
-    Rotation Matrix
-    <input type="text" name="rotation" value="0.1,0.6,0.3" id ="rotatematrix">
-    <br>
-    Emit Color
-    <input type="text" name="colormatrix" value="0.0,0.01,0.0" id ="emitcolor">
-   
-  <br>
+  
 <script type="text/javascript">
 document.getElementById('key').value = circleofFifths.randomElement();
 

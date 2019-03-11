@@ -78,6 +78,7 @@ function fullscreen(){
   </script>
 <input type="text" name="fps" value="0" id ="fps">
 <input type="text" name="vcount" value="0" id ="vcount">
+Double Click to Fullscreen
 <br>
 <canvas ondblclick="fullscreen()" id="glCanvas" width="1600" height="900">
   Browser Unsupported
@@ -221,12 +222,15 @@ function autoMutate(times)
   <input type="checkbox" id="autorotate" checked=True> Auto Rotate<br>
 
   <select id="drawmode">
-    <option value="gl.POINTS">Points</option>
-    <option value="gl.LINE_STRIP">Lines Connect</option>
-    <option value="gl.TRIANGLES">Triangle</option>
     <option value="gl.LINES">Lines</option>
+    <option value="gl.LINE_STRIP">Lines Connect</option>
+    <option value="gl.POINTS">Points</option>
+    <option value="gl.TRIANGLES">Triangle</option>
 
   </select>
+
+  <button onclick="particleList=[]">Reset Particles</button>
+
   <br>
 
 
@@ -234,7 +238,7 @@ function autoMutate(times)
 
  
 
-  <textarea rows="6" cols="14" id ="polydisplay" value =""></textarea>
+  <textarea rows="9" cols="14" id ="polydisplay" value =""></textarea>
   <input type="text" name="chorddisplay" value="" id ="chorddisplay">
 
    
@@ -271,7 +275,8 @@ document.getElementById('key').value = circleofFifths.randomElement();
 InitDemo();
 </script>
 
-
+<br>
+<p>Made by Ethan Ooi 2019 </p>
 
   </body>
 </html>

@@ -696,9 +696,7 @@ function shufflePoly(start,end)
   cr = PolyUnits[0].rhythm.length/8;
   for (var i = start; i < end; i++) {
   	PolyUnits[i].rhythm = null
-    PolyUnits[i].cr = null;
     PolyUnits[i].rhythm = randompolyrhythm(getRndInteger(2,7));
-    PolyUnits[i].cr = cr;
     PolyUnits[i].colorred = Math.random() * (1 - 0.2) -0.2
     PolyUnits[i].colorgreen = Math.random() * (1 - 0.2) -0.2
     PolyUnits[i].colorblue = Math.random() * (1 - 0.2) -0.2
