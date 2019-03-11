@@ -17,6 +17,7 @@ var PARTICLE_LIFE = 560;
 var INITIAL_VELOCITY = 0;
 var VELOCITY_VARIANCE = 0.05;
 var AUTO_ROTATE_TOGGLE = 1;
+var AUTO_GRAPHICS_TOGGLE = 1;
 
 var Particle = function(x,y,z,c,t){
   this.x = x;
@@ -69,87 +70,11 @@ return outs;
 }
 
 
-var varydist = 2;
-function squareRandom(number,min,max,voicelocation,lifespan)
-{
-
-  let outs = [];
-  let x,y,z,cr,cg,cb;
-  //4 locations +x,+z, +x,-z , +z,-x, -x,-z
-
-  squarelocation = voicelocation % 4;
-  if (voicelocation > PolyUnits.length){voicelocation-=1}
-  switch(squarelocation)
-  {
-  	case 0: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min + varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min + varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-    case 1: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min + varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min - varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-  	case 2: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min - varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min -varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-  	case 3: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min - varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min + varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-
-
-  }
-
-  
-  return outs;
-}
-
 
 function emitLocation(voicelocation)
 {
 	//get locations
-	particleList = particleList.concat(circlePlace(EMIT_RATE,0.5,-0.5,voicelocation,PARTICLE_LIFE,PolyUnits.length,2));
+	particleList = particleList.concat(circlePlace(EMIT_RATE,0.25,-0.25,voicelocation,PARTICLE_LIFE,PolyUnits.length,2));
 }
 
 

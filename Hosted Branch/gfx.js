@@ -17,6 +17,7 @@ var PARTICLE_LIFE = 560;
 var INITIAL_VELOCITY = 0;
 var VELOCITY_VARIANCE = 0.05;
 var AUTO_ROTATE_TOGGLE = 1;
+var AUTO_GRAPHICS_TOGGLE = 1;
 
 var Particle = function(x,y,z,c,t){
   this.x = x;
@@ -27,88 +28,53 @@ var Particle = function(x,y,z,c,t){
   this.t = t;
 }
 
-
-var varydist = 2;
-function squareRandom(number,min,max,voicelocation,lifespan)
+function clearParticles()
 {
-
-  let outs = [];
-  var x,y,z,cr,cg,cb;
-  //4 locations +x,+z, +x,-z , +z,-x, -x,-z
-
-  squarelocation = voicelocation % 4;
-
-  switch(squarelocation)
+  console.log(i);
+  for (var i = 0; i <= particleList.length; i++)
   {
-  	case 0: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min + varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min + varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-    case 1: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min + varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min - varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-  	case 2: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min - varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min -varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
-
-  	case 3: 
-
-  	for (var i = 0; i < number; i++) {
-	    x = Math.random() * (max - min) + min - varydist
-	    y = Math.random() * (max - min) + min
-	    z = Math.random() * (max - min) + min + varydist
-	    cr = PolyUnits[voicelocation].colorred;
-      cg = PolyUnits[voicelocation].colorblue;
-      cb = PolyUnits[voicelocation].colorgreen;
-
-	    outs.push(new Particle(x,y,z,[cr,cg,cb],lifespan));
-  	} 
-  	break;
+    removal.push(i); 
+  }
+}
 
 
+function pushParticle(x,y,z,[cr,cg,cb],lifespan)
+{
+  return new Particle(x, y, z, [cr, cg, cb], lifespan);
+}
 
+
+//r * sin(theta) = x, r* sin(90-theta) = y, where theta is 360/voices, and r is radius
+function circlePlace(number,min,max,voicelocation,lifespan,totalvoices,radius)
+{
+  let theta = 360.0/totalvoices;
+  let x, y, z, cr, cg, cb;
+  let outs = []
+  if (voicelocation > PolyUnits.length) { voicelocation -= 1;console.log("hmm") }
+  for (var i = 0; i<number; i++)
+  {
+    x = Math.sin((theta * voicelocation) * Math.PI / 180) * radius;
+    y = Math.random() * (max - min) + min
+    z = Math.sin((90-(theta*voicelocation)) * Math.PI / 180) * radius;
+    x = Math.random() * (max - min) + min + x
+    z = Math.random() * (max - min) + min + z
+    cr = PolyUnits[voicelocation].colorred;
+    cg = PolyUnits[voicelocation].colorblue;
+    cb = PolyUnits[voicelocation].colorgreen;
+    outs.push(new Particle(x, y, z, [cr, cg, cb], lifespan));
   }
 
-  
-  return outs;
+return outs;
+
+
 }
+
 
 
 function emitLocation(voicelocation)
 {
 	//get locations
-	particleList = particleList.concat(squareRandom(EMIT_RATE,0.5,-0.5,voicelocation,PARTICLE_LIFE));
+	particleList = particleList.concat(circlePlace(EMIT_RATE,0.5,-0.5,voicelocation,PARTICLE_LIFE,PolyUnits.length,2));
 }
 
 
@@ -118,7 +84,7 @@ function randomInitParticles(number,min,max)
 {
 
   let outs = [];
-
+  let x, y, z, cr, cg, cb;
   for (var i = 0; i < number; i++) {
     x = Math.random() * (max - min) + min
     y = Math.random() * (max - min) + min
@@ -139,6 +105,7 @@ function updateParticles(g)
   if (addqueue.length > 0)
   {
     particleList = particleList.concat(addqueue);
+    addqueue = null;
     addqueue = [];
   }
 
@@ -163,6 +130,7 @@ function updateParticles(g)
     particleList.splice(removal[j],SHAPE_VERTEX);
 
   }
+  removal = null;
   removal = [];
 
 }
@@ -359,10 +327,10 @@ var InitDemo = function(){
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
 
-  gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
+  gl.clearColor(Math.random() / 0.2, Math.random() / 0.5, 0.8, 0.8);
   var angle = 0;
-  totalFrames = 0;
-  startTime = performance.now();
+  var totalFrames = 0;
+  var startTime = performance.now();
   var loop = function(){
     totalFrames++;
     angle = performance.now() / 2000 / 6 * 2 * Math.PI;
@@ -403,8 +371,9 @@ var InitDemo = function(){
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
 
     gl.drawElements(eval(DRAW_MODE), boxIndices.length, gl.UNSIGNED_SHORT, 0);
-    requestAnimationFrame(loop);
+    
+    setTimeout(()=>{window.requestAnimationFrame(loop)},10);
   };
-  requestAnimationFrame(loop);
+  window.requestAnimationFrame(loop);
 
 };

@@ -44,6 +44,7 @@ function fullscreen(){
       beatarray = document.getElementById("keykey").value;
       notesarray = [];
       tempo = document.getElementById("tempochange").value;
+      
       type = "sine";
       PolyUnits.push(new PolyUnit(beatarray,notesarray,tempo,type));
 
@@ -60,6 +61,7 @@ function fullscreen(){
     function updateTempo()
     {
       currenttempo = document.getElementById("tempochange").value;
+      GRAVITY_STRENGTH = 0.00008 + (0.0004* currenttempo / 70);
       return currenttempo;
     }
     function updateScale()
@@ -91,9 +93,13 @@ function updateGraphicsSettings()
   document.getElementById("fps").value = fps;
   totalFrames = 0;
   startTime = performance.now();
-  DRAW_MODE = document.getElementById("drawmode").value;
+  
 
   AUTO_ROTATE_TOGGLE = document.getElementById('autorotate').checked;
+
+  DRAW_MODE = document.getElementById("drawmode").value;
+
+
 
 
   //SHAPE_VERTEX = document.getElementById("drawnum").value;
@@ -122,11 +128,14 @@ function updateGraphicsSettings()
 
 function autoMutate(times)
 {
-    pol1 = Math.random() < 0.5 ? -1 : 1;
-    pol2 = Math.random() < 0.5 ? -1 : 1;
-    pol3 = Math.random() < 0.3 ? 1 : 0;
-    pol4 = Math.random() < 0.5 ? 1 : 0;
-    pol5 = Math.random() < 0.3 ? 1 : 0;
+    let pol1 = Math.random() < 0.5 ? -1 : 1;
+    let pol2 = Math.random() < 0.5 ? -1 : 1;
+    let pol3 = Math.random() < 0.3 ? 1 : 0;
+    let pol4 = Math.random() < 0.5 ? 1 : 0;
+    let pol5 = Math.random() < 0.3 ? 1 : 0;
+    let currtempo;
+    let newtempo;
+
   var mutseed = getRndInteger(1,times*4);
   //console.log("times" + times);
   if (mutseed>times*1.5) 
@@ -158,10 +167,10 @@ function autoMutate(times)
       if (document.getElementById('autopoly').checked)
       {
             shufflenum= getRndInteger(1,PolyUnits.length);
-      targets = []
+      let targets = []
       for (var i = 0; i < shufflenum; i++)
       {
-        target = getRndInteger(0,PolyUnits.length);
+        let target = getRndInteger(0,PolyUnits.length);
         shufflePoly(target,target+1);
         targets.push(target);
       }
@@ -218,8 +227,9 @@ function autoMutate(times)
 
 
   <input type="checkbox" id="automutate" checked=True> Auto Key Tempo
-  <input type="checkbox" id="autopoly" checked=True> Auto Poly<br>
-  <input type="checkbox" id="autorotate" checked=True> Auto Rotate<br>
+  <input type="checkbox" id="autopoly" checked=True> Auto Poly
+  <input type="checkbox" id="autorotate" checked=True> Auto Rotate
+
 
   <select id="drawmode">
     <option value="gl.LINES">Lines</option>
@@ -231,15 +241,12 @@ function autoMutate(times)
 
   <button onclick="particleList=[]">Reset Particles</button>
 
-  <br>
 
 
 
 
  
 
-  <textarea rows="9" cols="14" id ="polydisplay" value =""></textarea>
-  <input type="text" name="chorddisplay" value="" id ="chorddisplay">
 
    
   <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
@@ -264,8 +271,13 @@ function autoMutate(times)
   <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
   <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
 </th>
+<th>
+  <textarea rows="9" cols="14" id="polydisplay" value=""></textarea>
+</th>
+<th>
+  <input type="text" name="chorddisplay" value="" id="chorddisplay">
+</th>
 
-  <br>
 </tr>
 </table>
   
@@ -275,7 +287,6 @@ document.getElementById('key').value = circleofFifths.randomElement();
 InitDemo();
 </script>
 
-<br>
 <p>Made by Ethan Ooi 2019 </p>
 
   </body>
