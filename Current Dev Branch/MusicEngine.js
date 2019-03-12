@@ -1,4 +1,4 @@
-"strict mode";	
+"use strict";
 
 var mutatenumber=3;
 var automutate_switch=1;
@@ -30,10 +30,21 @@ const EQArray = init_eqs(context,20);
 const PolyUnits = [];
 
 
-function newcolor()
-{
-  return (Math.random,Math.random,Math.random);
+
+function pastelColor(colormix) {
+  let red = Math.random();
+  let blue = Math.random();
+  let green = Math.random();
+  if (colormix != null) {
+    red = (red + colormix[0]) / 2;
+    green = (green + colormix[1]) / 2;
+    blue = (blue + colormix[2]) / 2;
+  }
+  return ([red, green, blue]);
+
 }
+
+
 function PolyUnit(rhythm,notes,basetempo,type){
   this.rhythm = rhythm;
   this.notes = notes;
@@ -41,9 +52,10 @@ function PolyUnit(rhythm,notes,basetempo,type){
   this.type = type;
   this.voicenumber = PolyUnits.length;
   this.cr = (rhythm.length/8);
-  this.colorred = Math.random() * (0.9-0.5) + 0.5;
-  this.colorblue = Math.random() * (0.9-0.5) + 0.5;
-  this.colorgreen = Math.random() * (0.9-0.5) + 0.5;
+  let bgcolor = pastelColor([0.6, 0.6, 0.6]);
+  this.colorred = bgcolor[0];
+  this.colorblue = bgcolor[1];
+  this.colorgreen = bgcolor[2];
 }
 PolyUnit.prototype.play = function(startTime){
   ostinato(this.rhythm,this.notes[0],this.basetempo*this.cr,startTime,this.type,this.voicenumber);
@@ -358,12 +370,11 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  let chordtones = null;
     chordcache = null;
     let octave = 0;
-    let noteletter = 0;
     let leftdist = 0;
     let rightdist = 0;
     let samedist = 0;
 	  chordtones = [];
-	  chordcache = [];
+    chordcache = [];
 	  for (var i = 0; i < number; i++) {
 	      if (currentdegree == 0)
 	      {
@@ -389,7 +400,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  		{
 	   			octave = parseInt(global_previous_chords[i].charAt(1));
 	 		}
-	  		noteletter = global_previous_chords[i].slice(0,-1);
+
 	  		leftdist = findDistance((chordtones[i] + ((octave)-1)),global_previous_chords[i]);
 
 
@@ -454,7 +465,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  		{
 	   			octave = parseInt(global_previous_chords[i].charAt(1));
 	 		}
-	  		noteletter = global_previous_chords[i].slice(0,-1);
+
 	  		leftdist = findDistance((chordtones[i] + ((octave)-1)),global_previous_chords[i]);
 
 
@@ -512,7 +523,7 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 
 	 else if (global_previous_chords.length < chordtones.length) //polys added
 	 {
-	 	polydiff = Math.abs(global_previous_chords.length - chordtones.length);
+
 	 	for (var i = 0; i<global_previous_chords.length;i++)
 		{
 			if (global_previous_chords[i].length === 3){
@@ -523,7 +534,6 @@ function voice_seperation(key,currentdegree,interval,number,scale)
 	  		{
 	   			octave = parseInt(global_previous_chords[i].charAt(1));
 	 		}
-	  		noteletter = global_previous_chords[i].slice(0,-1);
 
 	  		leftdist = findDistance((chordtones[i] + ((octave)-1)),global_previous_chords[i]);
 
@@ -662,7 +672,7 @@ function notetoFreq(note){//[Note][Octave0-9]
 
 function init_eqs(context,size)
 {
-  oscarray = [];
+  let oscarray = [];
   for (let i = 0; i < size; i++) {
     oscarray[i] = context.createBiquadFilter();
   }
@@ -672,7 +682,7 @@ function init_eqs(context,size)
 
 function init_osc(context,type,size)
 {
-  oscarray = [];
+  let oscarray = [];
   for (let i = 0; i < size; i++) {
     oscarray[i] = context.createOscillator();
     oscarray[i].type = type;
@@ -682,7 +692,7 @@ function init_osc(context,type,size)
 
 function init_gain(context,size)
 {
-  oscarray = [];
+  let oscarray = [];
   for (let i = 0; i < size; i++) {
     oscarray[i] = context.createGain();
   }
@@ -693,13 +703,14 @@ function init_gain(context,size)
 
 function shufflePoly(start,end)
 {
-  cr = PolyUnits[0].rhythm.length/8;
+  let cr = PolyUnits[0].rhythm.length / 8;
   for (var i = start; i < end; i++) {
   	PolyUnits[i].rhythm = null
     PolyUnits[i].rhythm = randompolyrhythm(getRndInteger(2,7));
     PolyUnits[i].colorred = Math.random() * (1 - 0.2) -0.2
     PolyUnits[i].colorgreen = Math.random() * (1 - 0.2) -0.2
     PolyUnits[i].colorblue = Math.random() * (1 - 0.2) -0.2
+    PolyUnits[i].cr = cr;
   }
 }
 function shuffleonePoly()
@@ -725,16 +736,18 @@ function PolyTrigger(PolyArray,time)
 }
 
 
-
+var e_l_notedegree;
+var e_l_basetempo;
+var e_l_updateChords;
+var e_l_oldchords;
 function EventLoop(key,startTime)
 {
-
-  var basetempo = PolyUnits[0].basetempo;
+   e_l_notedegree = lastnotedegree;
+   e_l_basetempo = PolyUnits[0].basetempo;
   if (isPlaying == 1) {
 
 
-  	var updateChords = null;
-    var updateChords = function()
+    e_l_updateChords = function()
     {
       
       
@@ -742,22 +755,22 @@ function EventLoop(key,startTime)
       {
         if (Math.random() < 0.35) //percent chance of keychange on 4 or 5
         {
-          let keypol = Math.random() <0.5? 1:-1;
+
           document.getElementById('key').value = 
-          key_transpose(document.getElementById('key').value,keypol*7);
+            key_transpose(document.getElementById('key').value, (Math.random() < 0.5 ? 1 : -1)*7);
           console.log("Key changed")
-          notedegree = [1,1,6,6,4].randomElement();
+          e_l_notedegree = [1,1,6,6,4].randomElement();
         }
         else
         {
-          notedegree = chordchanger(lastnotedegree);
+          e_l_notedegree = chordchanger(lastnotedegree);
         }
 
       }
 
       else
       {
-        notedegree = chordchanger(lastnotedegree);
+        e_l_notedegree = chordchanger(lastnotedegree);
         
       }
 
@@ -766,15 +779,15 @@ function EventLoop(key,startTime)
 
 	if (firstbar)
 	{
-		global_previous_chords = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
+    global_previous_chords = dia_chordConstructor(key, e_l_notedegree,intervalstack,PolyUnits.length,globalscale);
     	global_previous_chords = scatter(global_previous_chords,1);
     	firstbar = 0;
 	}
 	else
 	{
-	oldchords = global_previous_chords;
-	global_previous_chords = voice_seperation(key,notedegree,intervalstack,PolyUnits.length,globalscale);
-	if (oldchords == global_previous_chords)
+     e_l_oldchords = global_previous_chords;
+    global_previous_chords = voice_seperation(key, e_l_notedegree,intervalstack,PolyUnits.length,globalscale);
+    if (e_l_oldchords == global_previous_chords)
 	{
 		global_previous_chords = scatter(notesbuffer,1);
 		console.log(global_previous_chords);
@@ -790,8 +803,8 @@ function EventLoop(key,startTime)
       		PolyUnits[i].notes = null;
           PolyUnits[i].notes = [global_previous_chords[i]];
       }
-      console.log(lastnotedegree + "=>" + notedegree )
-      lastnotedegree=notedegree;
+      console.log(lastnotedegree + "=>" + e_l_notedegree )
+      lastnotedegree = e_l_notedegree;
 
 
       
@@ -810,10 +823,10 @@ function EventLoop(key,startTime)
     //console.log("Minor Ninth Check Count:" + minorcheck);
 
     
-    setTimeout(() => {updateChords();PolyTrigger(PolyUnits,context.currentTime)},startTime-context.currentTime);
+    setTimeout(() => {e_l_updateChords();PolyTrigger(PolyUnits,context.currentTime)},startTime-context.currentTime);
     
-      nextkey = updateKey();
-      globalscale= updateScale();
+      let nextkey = updateKey();
+      let globalscale= updateScale();
       changeTempo(document.getElementById('tempochange').value,PolyUnits);
       updateGraphicsSettings()
 
@@ -836,14 +849,14 @@ function EventLoop(key,startTime)
           isPlaying = 1;
           barcount = 0;
           console.log("frame update");
-          EventLoop(nextkey,(startTime+(240/basetempo)),globalscale)
+          EventLoop(nextkey, (startTime + (240 / e_l_basetempo)),globalscale)
 
-        },(240000/basetempo));
+        }, (240000 / e_l_basetempo));
 
       }
       else
       {
-        setTimeout(function(){EventLoop(nextkey,(startTime+(240/basetempo)),globalscale)},(240000/basetempo));   
+        setTimeout(function () { EventLoop(nextkey, (startTime + (240 / e_l_basetempo)), globalscale) }, (240000 / e_l_basetempo));   
       }
     }
   else {
@@ -857,7 +870,7 @@ function ostinato(rhythm,notearray,tempo,startTime,type,playingvoice)
   var time = startTime;
   let state = "";
 
-  eighthNoteTime = (60/tempo) /2;
+  let eighthNoteTime = (60/tempo) /2;
     for (let i = 0; i < rhythm.length; i++) {
       let lookahead = 1;
       let durationadded = 0;

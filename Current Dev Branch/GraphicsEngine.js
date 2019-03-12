@@ -1,4 +1,4 @@
-"strict mode";
+"use strict";
 var DRAW_MODE = "gl.LINE_STRIP";
 var SHAPE_VERTEX = 2;
 var EMIT_RATE = 1;
@@ -8,14 +8,13 @@ var addqueue = [];
 var totalFrames = 0;
 var startTime = 0;
 var GRAVITY_STRENGTH = 0.00008;
-const devianceg = 0.00005;
-const deviancev = 0.0003
-const seed = 25565;
+const devianceg = 0.00013;
+const deviancev = 0.0005
 
 var removal = [];
-var PARTICLE_LIFE = 560;
+var PARTICLE_LIFE = 420;
 var INITIAL_VELOCITY = 0;
-var VELOCITY_VARIANCE = 0.05;
+var VELOCITY_VARIANCE = 0.1;
 var AUTO_ROTATE_TOGGLE = 1;
 var AUTO_GRAPHICS_TOGGLE = 1;
 
@@ -192,7 +191,7 @@ var vertexShaderText =
   '{',
   'fragColor=vertColor;',
   'gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-  'gl_PointSize = 7.0;',
+  'gl_PointSize = 10.0;',
   '}'
 ].join('\n');
 
@@ -222,12 +221,13 @@ var InitDemo = function(){
   }
 
 
-  gl.clearColor(1.0,0.7,1.0,1.0);
+  
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.CULL_FACE);
   gl.frontFace(gl.CCW);
   gl.cullFace(gl.BACK);
+  gl.lineWidth(100);
 
   const vertexShader = gl.createShader(gl.VERTEX_SHADER);
   const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -326,15 +326,16 @@ var InitDemo = function(){
   //console.log(particleList);
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
-
-  gl.clearColor(Math.random() / 0.2, Math.random() / 0.5, 0.8, 0.8);
+  let bgcolor = pastelColor([1, 1, 1]);
+  gl.clearColor(bgcolor[0], bgcolor[1], bgcolor[2],1.0);
   var angle = 0;
   var totalFrames = 0;
   var startTime = performance.now();
-  var loop = function(){
+  let fps;
+  let loop = function(){
     totalFrames++;
     angle = performance.now() / 2000 / 6 * 2 * Math.PI;
-    elapsed = performance.now() - startTime;
+    let elapsed = performance.now() - startTime;
     if (elapsed > 250)
     {
       //gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
