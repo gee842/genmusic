@@ -2,7 +2,7 @@
 var DRAW_MODE = "gl.LINE_STRIP";
 var SHAPE_VERTEX = 2;
 var EMIT_RATE = 1;
-var AUTO_ROTATE = [0.2,-0.2,0];
+var AUTO_ROTATE = [0.2, -0.2, 0];
 var particleList = [];
 var addqueue = [];
 var totalFrames = 0;
@@ -18,43 +18,41 @@ var VELOCITY_VARIANCE = 0.1;
 var AUTO_ROTATE_TOGGLE = 1;
 var AUTO_GRAPHICS_TOGGLE = 1;
 
-var Particle = function(x,y,z,c,t){
+var Particle = function (x, y, z, c, t) {
   this.x = x;
-  this.y = y+1.5;
+  this.y = y + 1.5;
   this.z = z;
-  this.v = [0.0,0.0,0.0];
+  this.v = [0.0, 0.0, 0.0];
   this.c = c;
   this.t = t;
 }
 
-function clearParticles()
-{
+function clearParticles() {
   console.log(i);
-  for (var i = 0; i <= particleList.length; i++)
-  {
-    removal.push(i); 
+  for (var i = 0; i <= particleList.length; i++) {
+    removal.push(i);
   }
 }
 
 
-function pushParticle(x,y,z,[cr,cg,cb],lifespan)
-{
+function pushParticle(x, y, z, [cr, cg, cb], lifespan) {
   return new Particle(x, y, z, [cr, cg, cb], lifespan);
 }
 
 
 //r * sin(theta) = x, r* sin(90-theta) = y, where theta is 360/voices, and r is radius
-function circlePlace(number,min,max,voicelocation,lifespan,totalvoices,radius)
-{
-  let theta = 360.0/totalvoices;
+function circlePlace(number, min, max, voicelocation, lifespan, totalvoices, radius) {
+  let theta = 360.0 / totalvoices;
   let x, y, z, cr, cg, cb;
   let outs = []
-  if (voicelocation > PolyUnits.length) { voicelocation -= 1;console.log("hmm") }
-  for (var i = 0; i<number; i++)
-  {
+  if (voicelocation > PolyUnits.length) {
+    voicelocation -= 1;
+    console.log("hmm")
+  }
+  for (var i = 0; i < number; i++) {
     x = Math.sin((theta * voicelocation) * Math.PI / 180) * radius;
     y = Math.random() * (max - min) + min
-    z = Math.sin((90-(theta*voicelocation)) * Math.PI / 180) * radius;
+    z = Math.sin((90 - (theta * voicelocation)) * Math.PI / 180) * radius;
     x = Math.random() * (max - min) + min + x
     z = Math.random() * (max - min) + min + z
     cr = PolyUnits[voicelocation].colorred;
@@ -63,24 +61,22 @@ function circlePlace(number,min,max,voicelocation,lifespan,totalvoices,radius)
     outs.push(new Particle(x, y, z, [cr, cg, cb], lifespan));
   }
 
-return outs;
+  return outs;
 
 
 }
 
 
 
-function emitLocation(voicelocation)
-{
-	//get locations
-	particleList = particleList.concat(circlePlace(EMIT_RATE,0.25,-0.25,voicelocation,PARTICLE_LIFE,PolyUnits.length,2));
+function emitLocation(voicelocation) {
+  //get locations
+  particleList = particleList.concat(circlePlace(EMIT_RATE, 0.4, -0.4, voicelocation, PARTICLE_LIFE, PolyUnits.length, 2));
 }
 
 
 
 
-function randomInitParticles(number,min,max)
-{
+function randomInitParticles(number, min, max) {
 
   let outs = [];
   let x, y, z, cr, cg, cb;
@@ -92,17 +88,15 @@ function randomInitParticles(number,min,max)
     cg = Math.random()
     cb = Math.random()
 
-    outs.push(new Particle(x,y,z,[cr,cg,cb],PARTICLE_LIFE));
+    outs.push(new Particle(x, y, z, [cr, cg, cb], PARTICLE_LIFE));
   }
   return outs;
 }
 
-function updateParticles(g)
-{
+function updateParticles(g) {
 
 
-  if (addqueue.length > 0)
-  {
+  if (addqueue.length > 0) {
     particleList = particleList.concat(addqueue);
     addqueue = null;
     addqueue = [];
@@ -120,13 +114,16 @@ function updateParticles(g)
     particleList[i].t -= 1;
 
 
-    if ((particleList[i].t) <= 0)
-    {
+    if ((particleList[i].t) <= 0) {
       removal.push(i);
     }
   }
   for (var j = 0; j < removal.length; j++) {
-    particleList.splice(removal[j],SHAPE_VERTEX);
+    for (var k = 0; k< SHAPE_VERTEX; k++)
+    {
+      particleList[j+k] = null;
+    }
+    particleList.splice(removal[j], SHAPE_VERTEX);
 
   }
   removal = null;
@@ -134,11 +131,9 @@ function updateParticles(g)
 
 }
 
-function giveVertexBuffer(particles)
-{
+function giveVertexBuffer(particles) {
   if (!particles) return [];
   let outp = [];
-  var els = [];
   for (var i = 0; i < particles.length; i++) {
     outp.push(particles[i].x);
     outp.push(particles[i].y);
@@ -153,8 +148,7 @@ function giveVertexBuffer(particles)
 }
 
 
-function giveParticleOrder(particles)
-{
+function giveParticleOrder(particles) {
   if (!particles) return [];
   let out = [];
   for (var i = 0; i < particles.length; i++) {
@@ -164,8 +158,7 @@ function giveParticleOrder(particles)
 }
 
 
-function randomVelocities(particles,min,max)
-{
+function randomVelocities(particles, min, max) {
   for (var i = 0; i < particles.length; i++) {
 
     particles[i].v[0] = Math.random() * (max - min) + min;
@@ -176,8 +169,7 @@ function randomVelocities(particles,min,max)
 
 
 
-var vertexShaderText =
-[
+var vertexShaderText = [
   'precision mediump float;',
   '',
   'attribute vec3 vertPosition;',
@@ -195,8 +187,7 @@ var vertexShaderText =
   '}'
 ].join('\n');
 
-var fragmentShaderText =
-[
+var fragmentShaderText = [
   'precision mediump float;',
   '',
   'varying vec3 fragColor;',
@@ -209,19 +200,18 @@ var fragmentShaderText =
 
 
 
-var InitDemo = function(){
+var InitDemo = function () {
 
 
 
   const canvas = document.querySelector('#glCanvas');
   const gl = canvas.getContext('webgl');
-  if (!gl)
-  {
+  if (!gl) {
     gl = canvas.getContext('experimental-webgl');
   }
 
 
-  
+
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.CULL_FACE);
@@ -231,17 +221,17 @@ var InitDemo = function(){
 
   const vertexShader = gl.createShader(gl.VERTEX_SHADER);
   const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-  gl.shaderSource(vertexShader,vertexShaderText);
-  gl.shaderSource(fragmentShader,fragmentShaderText);
+  gl.shaderSource(vertexShader, vertexShaderText);
+  gl.shaderSource(fragmentShader, fragmentShaderText);
 
   gl.compileShader(vertexShader);
   gl.compileShader(fragmentShader);
 
-  if(!gl.getShaderParameter(vertexShader,gl.COMPILE_STATUS)){
+  if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
     console.error('ERROR compiling vertex shader!', gl.getShaderInfoLog(vertexShader));
     return;
   }
-  if(!gl.getShaderParameter(fragmentShader,gl.COMPILE_STATUS)){
+  if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
     console.error('ERROR compiling fragment shader!', gl.getShaderInfoLog(fragmentShader));
     return;
   }
@@ -253,7 +243,7 @@ var InitDemo = function(){
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
 
-  if(!gl.getProgramParameter(program,gl.LINK_STATUS)){
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     console.error('ERROR compiling program!', gl.getProgramInfoLog(program));
     return;
   }
@@ -268,7 +258,7 @@ var InitDemo = function(){
   //  1.0, 1.0, 1.0,     0.5, 0.5, 0.5,
   // ];
 
-  var boxIndices =giveParticleOrder(particleList);
+  var boxIndices = giveParticleOrder(particleList);
 
   var boxVertexBufferObject = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, boxVertexBufferObject);
@@ -282,38 +272,38 @@ var InitDemo = function(){
   var colorAttribLocation = gl.getAttribLocation(program, 'vertColor');
   gl.vertexAttribPointer(
     positionAttribLocation, //attribute location
-    3,//number of elements per attribute
-    gl.FLOAT,//type of elements
+    3, //number of elements per attribute
+    gl.FLOAT, //type of elements
     gl.FALSE,
     6 * Float32Array.BYTES_PER_ELEMENT, //number of bytes 4*2
     //size of an indiviudal vertexShader
-    0//offset from beginning of a single vertex to this attribute
+    0 //offset from beginning of a single vertex to this attribute
   )
   gl.vertexAttribPointer(
     colorAttribLocation, //attribute location
-    3,//number of elements per attribute
-    gl.FLOAT,//type of elements
+    3, //number of elements per attribute
+    gl.FLOAT, //type of elements
     gl.FALSE,
     6 * Float32Array.BYTES_PER_ELEMENT, //number of bytes 4*2
     //size of an indiviudal vertexShader
-    3 * Float32Array.BYTES_PER_ELEMENT//offset from beginning of a single vertex to this attribute
+    3 * Float32Array.BYTES_PER_ELEMENT //offset from beginning of a single vertex to this attribute
   )
 
   gl.enableVertexAttribArray(positionAttribLocation);
   gl.enableVertexAttribArray(colorAttribLocation);
   gl.useProgram(program);
 
-  var matWorldUniformLocation = gl.getUniformLocation(program,'mWorld');
-  var matViewUniformLocation = gl.getUniformLocation(program,'mView');
-  var matProjUniformLocation = gl.getUniformLocation(program,'mProj');
+  var matWorldUniformLocation = gl.getUniformLocation(program, 'mWorld');
+  var matViewUniformLocation = gl.getUniformLocation(program, 'mView');
+  var matProjUniformLocation = gl.getUniformLocation(program, 'mProj');
 
   var worldMatrix = new Float32Array(16);
   var viewMatrix = new Float32Array(16);
   var projMatrix = new Float32Array(16);
   mat4.identity(worldMatrix);
-  mat4.lookAt(viewMatrix,[0,0,-8],[0,0,0],[0,1,0]);
+  mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
   var raidanvalue
-  mat4.perspective(projMatrix,0.7853981633974483,canvas.width/canvas.height, 0.1, 1000.0);
+  mat4.perspective(projMatrix, 0.7853981633974483, canvas.width / canvas.height, 0.1, 1000.0);
 
   gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
   gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
@@ -327,30 +317,30 @@ var InitDemo = function(){
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
   let bgcolor = pastelColor([1, 1, 1]);
-  gl.clearColor(bgcolor[0], bgcolor[1], bgcolor[2],1.0);
+  gl.clearColor(bgcolor[0], bgcolor[1], bgcolor[2], 1.0);
   var angle = 0;
   var totalFrames = 0;
   var startTime = performance.now();
   let fps;
-  let loop = function(){
+  let elapsed;
+  var loop
+  loop = function () {
     totalFrames++;
     angle = performance.now() / 2000 / 6 * 2 * Math.PI;
-    let elapsed = performance.now() - startTime;
-    if (elapsed > 250)
-    {
+    elapsed = performance.now() - startTime;
+    if (elapsed > 250) {
       //gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
-      fps = totalFrames/(elapsed/1000);
+      fps = totalFrames / (elapsed / 1000);
       document.getElementById("fps").value = fps;
       totalFrames = 0;
       startTime = performance.now();
       document.getElementById("vcount").value = particleList.length;
     }
 
-    
-    if (AUTO_ROTATE_TOGGLE)
-    {
 
-    mat4.rotate(worldMatrix, identityMatrix, angle,[AUTO_ROTATE[0],AUTO_ROTATE[1], AUTO_ROTATE[2]]);
+    if (AUTO_ROTATE_TOGGLE) {
+
+      mat4.rotate(worldMatrix, identityMatrix, angle, [AUTO_ROTATE[0], AUTO_ROTATE[1], AUTO_ROTATE[2]]);
     }
 
     //mat4.rotate(worldMatrix, identityMatrix, angle*0.7, [-4,0,3]);
@@ -372,8 +362,10 @@ var InitDemo = function(){
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
 
     gl.drawElements(eval(DRAW_MODE), boxIndices.length, gl.UNSIGNED_SHORT, 0);
-    
-    setTimeout(()=>{window.requestAnimationFrame(loop)},10);
+
+    setTimeout(() => {
+      window.requestAnimationFrame(loop)
+    }, 10);
   };
   window.requestAnimationFrame(loop);
 
