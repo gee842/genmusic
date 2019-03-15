@@ -97,6 +97,11 @@ function isEqual(arr1,arr2)
 
 function findDistance(note1,note2)
 {
+  let octave2 = "";
+  let note1Number = "";
+  let note2Number = "";
+  let octave1 = "";
+
   if (note1.length === 3){
     octave1 = note1.charAt(2);
   }
@@ -160,6 +165,8 @@ function getRndInteger(min, max) {
 
 function key_transpose(note,setting)
 {
+    let originalnum = 0;
+    let transposednum = 0;
 
     originalnum = GlobalNotes.indexOf(note)
 
@@ -188,23 +195,24 @@ function key_transpose(note,setting)
 
 function getScale(key, scale) //returns set of notes
 {
-  ScaleSet = [];
-  ScaleSet.push(key);
-  totalmovements = 0;
+  let scaleset = [];
+  let totalmovements = 0;
+  let distanceLetter = 0;
+  scaleset.push(key);
   for (var i = 0; i < scale.length; i++) {
     distanceLetter = scale.charAt(i);
     if (distanceLetter == "T"){
       totalmovements+=2
-      ScaleSet.push(key_transpose(key,totalmovements));
+      scaleset.push(key_transpose(key,totalmovements));
     }
     else if (distanceLetter == "S"){
       totalmovements+=1
-      ScaleSet.push(key_transpose(key,totalmovements));
+      scaleset.push(key_transpose(key,totalmovements));
     }
 
   }
-  ScaleSet.pop();
-  return ScaleSet;
+  scaleset.pop();
+  return scaleset;
 }
 
 //findDegree(E, C, Major) = 3 << (1,2,3,4,5,6,7)
@@ -213,16 +221,17 @@ function getScale(key, scale) //returns set of notes
 //dia_chordConstructor(C,3,3(rds), 4, yes): E4 G3 A3 D5
 function dia_chordConstructor(key,currentdegree,interval,number,scale)
 {
-  chordtones = [];
-  notes = getScale(key,scale);
+  let chordtones = [];
+  let notes = getScale(key,scale);
+  let currdegree = currentdegree;
 
   for (var i = 0; i < number; i++) {
-      if (currentdegree == 0)
+    if (currdegree == 0)
       {
-        currentdegree+=7;
+      currdegree+=7;
       }
-      chordtones.push(notes[currentdegree-1]);
-      currentdegree = (currentdegree+(interval-1))%notes.length
+    chordtones.push(notes[currdegree-1]);
+    currdegree = (currdegree+(interval-1))%notes.length
   }
   return chordtones;
 
@@ -231,7 +240,8 @@ function dia_chordConstructor(key,currentdegree,interval,number,scale)
 function scatter(inputnotes,scat)
 {
 
-  outputnotes = [];
+  let outputnotes = [];
+  let numofnotes = 0;
 
   if (scat)
   {
@@ -271,7 +281,8 @@ function scatter(inputnotes,scat)
 function randompolyrhythm(div)
 {
 
-    re = "";
+    let re = "";
+    let c = 0;
     for (var i = 0; i < div; i++) {
       c = getRndInteger(1,12);
       switch (c) {
@@ -295,7 +306,7 @@ function randompolyrhythm(div)
 
 function chordchanger(currentchord)
 {
-  var selectedchord;
+  let selectedchord=0;
   switch(currentchord)
   {
     case 1:{
@@ -341,11 +352,16 @@ function chordchanger(currentchord)
 //Input: Previous Notes, Target Chord | Output: Next notes
 function voice_seperation(key,currentdegree,interval,number,scale)
 {
-	  upperb = 7;
-	  lowerb = 2;
-	  notes = getScale(key,scale);
-	  chordtones = null;
-	  chordcache = null;
+	  let upperb = 7;
+	  let lowerb = 2;
+	  let notes = getScale(key,scale);
+	  let chordtones = null;
+    chordcache = null;
+    let octave = 0;
+    let noteletter = 0;
+    let leftdist = 0;
+    let rightdist = 0;
+    let samedist = 0;
 	  chordtones = [];
 	  chordcache = [];
 	  for (var i = 0; i < number; i++) {
@@ -680,9 +696,7 @@ function shufflePoly(start,end)
   cr = PolyUnits[0].rhythm.length/8;
   for (var i = start; i < end; i++) {
   	PolyUnits[i].rhythm = null
-    PolyUnits[i].cr = null;
     PolyUnits[i].rhythm = randompolyrhythm(getRndInteger(2,7));
-    PolyUnits[i].cr = cr;
     PolyUnits[i].colorred = Math.random() * (1 - 0.2) -0.2
     PolyUnits[i].colorgreen = Math.random() * (1 - 0.2) -0.2
     PolyUnits[i].colorblue = Math.random() * (1 - 0.2) -0.2
@@ -698,9 +712,16 @@ function PolyTrigger(PolyArray,time)
 {
   //timediff = (expectedtime-time);
 //
+  document.getElementById('chorddisplay').value = ""
+  document.getElementById('polydisplay').value = ""
   for (var i = 0; i < PolyArray.length; i++) {
+    document.getElementById('chorddisplay').value += PolyArray[i].notes + ",";
+    document.getElementById('polydisplay').value += PolyArray[i].rhythm + "\n";
     PolyArray[i].play(time,i);
+
+
   }
+  document.getElementById('chorddisplay').value = document.getElementById('chorddisplay').value.slice(0,document.getElementById('chorddisplay').value.length -1)
 }
 
 
@@ -834,8 +855,9 @@ function EventLoop(key,startTime)
 function ostinato(rhythm,notearray,tempo,startTime,type,playingvoice)
 {
   var time = startTime;
+  let state = "";
+
   eighthNoteTime = (60/tempo) /2;
-  // for (var bar = 0; bar <= duration; bar++) {
     for (let i = 0; i < rhythm.length; i++) {
       let lookahead = 1;
       let durationadded = 0;
@@ -853,7 +875,7 @@ function ostinato(rhythm,notearray,tempo,startTime,type,playingvoice)
 
       state = rhythm[i];
 
-      var locationEmit = function(){emitLocation(playingvoice);}
+      let locationEmit = function(){emitLocation(playingvoice);}
 
       switch (state) {
         case "I":
