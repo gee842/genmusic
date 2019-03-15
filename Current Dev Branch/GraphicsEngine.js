@@ -95,39 +95,41 @@ function randomInitParticles(number, min, max) {
 
 function updateParticles(g) {
 
-
+  var returnlist = particleList;
   if (addqueue.length > 0) {
-    particleList = particleList.concat(addqueue);
+    returnlist = returnlist.concat(addqueue);
     addqueue = null;
     addqueue = [];
   }
 
-  for (var i = 0; i < particleList.length; i++) {
-    particleList[i].v[1] -= g + (Math.random() - 0.5) * 2 * devianceg;
-    particleList[i].v[0] -= (Math.random() - 0.5) * 2 * deviancev;
-    particleList[i].v[2] -= (Math.random() - 0.5) * 2 * deviancev;
+  for (var i = 0; i < returnlist.length; i++) {
+    returnlist[i].v[1] -= g + (Math.random() - 0.5) * 2 * devianceg;
+    returnlist[i].v[0] -= (Math.random() - 0.5) * 2 * deviancev;
+    returnlist[i].v[2] -= (Math.random() - 0.5) * 2 * deviancev;
 
-    particleList[i].x += particleList[i].v[0];
-    particleList[i].y += particleList[i].v[1];
-    particleList[i].z += particleList[i].v[2];
+    returnlist[i].x += returnlist[i].v[0];
+    returnlist[i].y += returnlist[i].v[1];
+    returnlist[i].z += returnlist[i].v[2];
 
-    particleList[i].t -= 1;
+    returnlist[i].t -= 1;
 
 
-    if ((particleList[i].t) <= 0) {
+    if ((returnlist[i].t) <= 0) {
       removal.push(i);
     }
   }
   for (var j = 0; j < removal.length; j++) {
     for (var k = 0; k< SHAPE_VERTEX; k++)
     {
-      particleList[j+k] = null;
+      returnlist[j + k] = null;
     }
-    particleList.splice(removal[j], SHAPE_VERTEX);
+    returnlist.splice(removal[j], SHAPE_VERTEX);
 
   }
   removal = null;
   removal = [];
+  
+  return returnlist;
 
 }
 
@@ -199,7 +201,11 @@ var fragmentShaderText = [
 ].join("\n");
 
 
-
+var graphics_loop
+var glmatrix_library = mat4;
+var boxVertices;
+var vertexShader;
+var fragmentShader;
 var InitDemo = function () {
 
 
@@ -219,8 +225,8 @@ var InitDemo = function () {
   gl.cullFace(gl.BACK);
   gl.lineWidth(100);
 
-  const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+  vertexShader = gl.createShader(gl.VERTEX_SHADER);
+  fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(vertexShader, vertexShaderText);
   gl.shaderSource(fragmentShader, fragmentShaderText);
 
@@ -248,7 +254,7 @@ var InitDemo = function () {
     return;
   }
 
-  var boxVertices = giveVertexBuffer(particleList);
+  boxVertices = giveVertexBuffer(particleList);
 
   // var boxVertices =
   // [ // X, Y, Z           R, G, B
@@ -300,9 +306,9 @@ var InitDemo = function () {
   var worldMatrix = new Float32Array(16);
   var viewMatrix = new Float32Array(16);
   var projMatrix = new Float32Array(16);
-  mat4.identity(worldMatrix);
-  mat4.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
-  mat4.perspective(projMatrix, 0.7853981633974483, canvas.width / canvas.height, 0.1, 1000.0);
+  glmatrix_library.identity(worldMatrix);
+  glmatrix_library.lookAt(viewMatrix, [0, 0, -8], [0, 0, 0], [0, 1, 0]);
+  glmatrix_library.perspective(projMatrix, 0.7853981633974483, canvas.width / canvas.height, 0.1, 1000.0);
 
   gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
   gl.uniformMatrix4fv(matViewUniformLocation, gl.FALSE, viewMatrix);
@@ -311,7 +317,7 @@ var InitDemo = function () {
 
   //MAIN RENDER LOOP
   var identityMatrix = new Float32Array(16);
-  mat4.identity(identityMatrix);
+  glmatrix_library.identity(identityMatrix);
   //console.log(particleList);
 
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
@@ -320,26 +326,26 @@ var InitDemo = function () {
   var angle = 0;
   var totalFrames = 0;
   var startTime = performance.now();
-  let fps;
-  let elapsed;
-  var loop
-  loop = function () {
-    totalFrames++;
-    angle = performance.now() / 2000 / 6 * 2 * Math.PI;
-    elapsed = performance.now() - startTime;
-    if (elapsed > 250) {
-      //gl.clearColor(Math.random()/0.5,Math.random()/0.5,Math.random()/0.5, 1.0);
-      fps = totalFrames / (elapsed / 1000);
-      document.getElementById("fps").value = fps;
-      totalFrames = 0;
-      startTime = performance.now();
-      document.getElementById("vcount").value = particleList.length;
-    }
-
-
-    if (AUTO_ROTATE_TOGGLE) {
-
-      mat4.rotate(worldMatrix, identityMatrix, angle, [AUTO_ROTATE[0], AUTO_ROTATE[1], AUTO_ROTATE[2]]);
+  var graphicstimeout;
+  graphics_loop = function () {
+    // var fps;
+    // var elapsed;
+    
+    //totalFrames++;
+    // elapsed = performance.now() - startTime;
+    // if (elapsed > 250) {
+      //   fps = totalFrames / (elapsed / 1000);
+      //   document.getElementById("fps").value = fps;
+      //   totalFrames = 0;
+      //   startTime = performance.now();
+      //   document.getElementById("vcount").value = particleList.length;
+      // }
+      
+      
+      if (AUTO_ROTATE_TOGGLE) {
+        
+      angle = performance.now() / 2000 / 6 * 2 * Math.PI;
+      glmatrix_library.rotate(worldMatrix, identityMatrix, angle, [AUTO_ROTATE[0], AUTO_ROTATE[1], AUTO_ROTATE[2]]);
     }
 
     //mat4.rotate(worldMatrix, identityMatrix, angle*0.7, [-4,0,3]);
@@ -352,7 +358,8 @@ var InitDemo = function () {
     //emitTriangle();
     //UPDATE PARTICLE POSITION HERE
 
-    updateParticles(GRAVITY_STRENGTH);
+    //particleList = null;
+    particleList = updateParticles(GRAVITY_STRENGTH);
 
     boxVertices = giveVertexBuffer(particleList);
     boxIndices = giveParticleOrder(particleList);
@@ -362,10 +369,12 @@ var InitDemo = function () {
 
     gl.drawElements(eval(DRAW_MODE), boxIndices.length, gl.UNSIGNED_SHORT, 0);
 
-    setTimeout(() => {
-      window.requestAnimationFrame(loop)
+    graphicstimeout = setTimeout(() => {
+      window.requestAnimationFrame(graphics_loop);
+      clearTimeout(graphicstimeout);
     }, 10);
+    
   };
-  window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(graphics_loop);
 
 };

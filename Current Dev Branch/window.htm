@@ -78,21 +78,18 @@ function fullscreen(){
       return currentscale;
     }
   </script>
-<input type="text" name="fps" value="0" id ="fps">
-<input type="text" name="vcount" value="0" id ="vcount">
-Double Click to Fullscreen
-<br>
+
+
+
 <canvas ondblclick="fullscreen()" id="glCanvas" width="1600" height="900">
   Browser Unsupported
 </canvas>
-<br>
 
+<br>
 <script>
 function updateGraphicsSettings()
 {
-  document.getElementById("fps").value = fps;
-  totalFrames = 0;
-  startTime = performance.now();
+
   
 
   AUTO_ROTATE_TOGGLE = document.getElementById('autorotate').checked;
