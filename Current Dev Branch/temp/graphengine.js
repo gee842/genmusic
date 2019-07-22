@@ -1,5 +1,5 @@
 "use strict";
-var DRAW_MODE = "gl.LINE_STRIP";
+var DRAW_MODE = "gl.POINTS";
 var SHAPE_VERTEX = 2;
 var EMIT_RATE = 1;
 var AUTO_ROTATE = [0.2, -0.15	, 0.0];
@@ -207,7 +207,7 @@ var vertexShaderText = [
   '{',
   'fragColor=vertColor;',
   'gl_Position = mProj * mView * mWorld * vec4(vertPosition, 1.0);',
-  'gl_PointSize = 4.0;',
+  'gl_PointSize = 6.0;',
   '}'
 ].join('\n');
 

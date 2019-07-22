@@ -4,7 +4,7 @@
 
         <script src="MusicEngine.js"></script>
         <script src="gl-matrix.js"></script>
-<script src="GraphicsEngine.js"></script>
+        <script src="graphengine.js"></script>
 
   <head>
 
@@ -235,10 +235,10 @@ function autoMutate(times)
 
 
   <select id="drawmode">
-    <option value="gl.LINE_STRIP">Lines Connect</option>
-    <option value="gl.LINES">Lines</option>
-    <option value="gl.POINTS">Points</option>
-    <option value="gl.TRIANGLES">Triangle</option>
+    <option value="gl.POINTS">Graphics: Points</option>
+    <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
+    <option value="gl.LINES">Graphics: Lines</option>
+    <option value="gl.TRIANGLES">Graphics: Triangle</option>
 
   </select>
 
@@ -270,7 +270,17 @@ function autoMutate(times)
   <div class="slidecontainer">
   <input type="range" min=55 max=170 value=110 class="slider" id="tempochange">
 </div>
-  <input type="text" name="key" value="D" id ="key">
+  <table style = "width:10%">
+  <tr>
+  <th>
+  <p> Key: </p>
+  </th>
+  <th>
+    <input type="text" name="key" value="D" id ="key" size=5>
+  </th>
+  </tr>
+  </table>
+  
   <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
   <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
 </th>
@@ -290,8 +300,20 @@ document.getElementById('key').value = circleofFifths.randomElement();
 InitDemo();
 </script>
 <!-- <input type="text" name="chorddisplay" value="" id="chorddisplay"> -->
+
+<h3>Press Start Generation to begin </h3>
+<p>
+  This program works upon the principle of layering independent components
+  <br>
+  'Push Random Layer' adds a new one to the stack, and conversely 'Remove Last Layer' pops one off the stack.
+  <br>
+  Different Graphics modes can be invoked using the selector next to the 'Reset Particles' button.
+  <br>
+  Auto Key Tempo and Auto Poly controls the automatic mutation engine. Disable for finer user control
+  <br>
+  Shuffle Polyrhythms brings the piece to a whole different feeling.
+</p>
+<br>
 <p>Made by Ethan Ooi 2019 </p>
-
-
   </body>
 </html>

@@ -30,11 +30,11 @@ const EQArray = init_eqs(context, 20);
 const PolyUnits = [];
 
 
-
+const commoncolors = [[1,0,0],[0,1,0],[0,0,1],[1,1,0],[1,0,1],[0,1,1]]
 function pastelColor(colormix) {
-  let red = Math.random();
-  let blue = Math.random();
-  let green = Math.random();
+  let red = Math.random() * 0.8;
+  let blue = Math.random()* 0.8;
+  let green = Math.random()* 0.8;
   if (colormix != null) {
     red = (red + colormix[0]) / 2;
     green = (green + colormix[1]) / 2;
@@ -52,7 +52,8 @@ function PolyUnit(rhythm, notes, basetempo, type) {
   this.type = type;
   this.voicenumber = PolyUnits.length;
   this.cr = (rhythm.length / 8);
-  let bgcolor = pastelColor([0.6, 0.6, 0.6]);
+  // let bgcolor = pastelColor([1, 1, 1]);
+  let bgcolor = commoncolors[Math.floor(Math.random()*commoncolors.length)]
   this.colorred = bgcolor[0];
   this.colorblue = bgcolor[1];
   this.colorgreen = bgcolor[2];
@@ -660,16 +661,16 @@ function shuffleonePoly() {
 function PolyTrigger(PolyArray, time) {
   //timediff = (expectedtime-time);
   //
-  document.getElementById('chorddisplay').value = ""
+  // document.getElementById('chorddisplay').value = ""
   document.getElementById('polydisplay').value = ""
   for (var i = 0; i < PolyArray.length; i++) {
-    document.getElementById('chorddisplay').value += PolyArray[i].notes + ",";
-    document.getElementById('polydisplay').value += PolyArray[i].rhythm + "\n";
+    document.getElementById('polydisplay').value += PolyArray[i].rhythm + "--";
+    document.getElementById('polydisplay').value += PolyArray[i].notes + "\n";
     PolyArray[i].play(time, i);
 
 
   }
-  document.getElementById('chorddisplay').value = document.getElementById('chorddisplay').value.slice(0, document.getElementById('chorddisplay').value.length - 1)
+  // document.getElementById('chorddisplay').value = document.getElementById('chorddisplay').value.slice(0, document.getElementById('chorddisplay').value.length - 1)
 }
 
 
