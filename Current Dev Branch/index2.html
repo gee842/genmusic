@@ -142,7 +142,7 @@ function autoMutate(times)
   //console.log("times" + times);
   if (mutseed>times*1.8) 
   {
-    if (pol5)
+    if (pol5 && document.getElementById('autotempo').checked)
     {
 
     currtempo = parseFloat(document.getElementById('tempochange').value);
@@ -229,7 +229,8 @@ function autoMutate(times)
 
   <br>
 
-  <input type="checkbox" id="automutate" checked=True> Auto Key Tempo
+  <input type="checkbox" id="automutate" checked=True> Auto Key
+  <input type="checkbox" id="autotempo" checked=False> Auto Tempo
   <input type="checkbox" id="autopoly" checked=True> Auto Poly
   <input type="checkbox" id="autorotate" checked=True> Auto Rotate
 
