@@ -1,8 +1,10 @@
 # genmusic
 
-Generative Music Javascript Web Application. 
+## Generative Music Vanilla Javascript Web Application. 
 
-Instructions: Hit Start generation, additional info of permutations in console.
+### Instructions
+
+Hit Start generation, additional info of permutations in console.
 
 This program works upon the principle of layering independent components 
 
