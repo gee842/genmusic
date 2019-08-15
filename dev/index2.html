@@ -1,5 +1,6 @@
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
+
 <html>
 
         <script src="MusicEngine.js"></script>
@@ -7,9 +8,17 @@
         <script src="GraphicsEngine.js"></script>
 
   <head>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
   </head>
   <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a class="brand-logo center">Press Start Generation to begin - Generative Music</a>
+      </div>
+    </nav>
+    <!-- <h3> &nbsp; Press Start Generation to begin </h3> -->
+    <br>
+  &nbsp;
     <script>
   
   var canvas = document.getElementById('glCanvas');
@@ -81,12 +90,13 @@ function fullscreen(){
 
 
 
-<canvas ondblclick="fullscreen()" id="glCanvas" width="800" height="900">
+<canvas ondblclick="fullscreen()" id="glCanvas" width="900" height="700">
   Browser Unsupported
 </canvas>
 
 <br>
 <script>
+  
 function updateGraphicsSettings()
 {
 
@@ -209,41 +219,129 @@ function autoMutate(times)
 
 </script>
 
-    
-    <button onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
-  <button onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
-  <button onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
-   <!-- <button onclick="updateGraphicsSettings()">Apply Particles</button> -->
-   <button onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
-  <button onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
-  <select id="scaleselect">
-  <option value="TTSTTTS">MajorScale</option>
-  <option value="TSTTSTT">MinorScale</option>
-  <option value="TTTTTTT">WholeTone</option>
-  <option value="TSTSTSTS">Octatonic1</option>
-  <option value="STSTSTST">Octatonic2</option>
-  <option value="TTSTSSTS">MajorFlat6</option>
+      &nbsp;
+    <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
+  <button class='btn waves-effect waves-light'  onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
+  <button class='btn waves-effect waves-light'  onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
+   <!-- <button class='btn waves-effect waves-light'  onclick="updateGraphicsSettings()">Apply Particles</button> -->
+   <button class='btn waves-effect waves-light'  onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
+  <button class='btn waves-effect waves-light'  onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
 
-</select>
+ <br>
+ <br>
+
+
+
  
+    &nbsp;
 
-  <br>
+  <label>
+    <input type="checkbox" class="filled-in" checked=True id="automutate" />
+    <span>Auto Key</span>
+  </label>
 
+  <label>
+    <input type="checkbox" class="filled-in" checked=False id="autotempo" />
+    <span>Auto Tempo</span>
+  </label>
+
+  <label>
+    <input type="checkbox" class="filled-in" checked=True id="autopoly" />
+    <span>Auto Poly</span>
+  </label>
+
+  <label>
+    <input type="checkbox" class="filled-in" checked=True id="autorotate" />
+    <span>Auto Rotate</span>
+  </label>
+    &nbsp;
+  <button class='btn waves-effect waves-light'
+    onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>  &nbsp;
+  <button class='btn waves-effect waves-light'
+    onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
+
+<br>
+<br>
+<!-- 
   <input type="checkbox" id="automutate" checked=True> Auto Key
   <input type="checkbox" id="autotempo" checked=False> Auto Tempo
   <input type="checkbox" id="autopoly" checked=True> Auto Poly
-  <input type="checkbox" id="autorotate" checked=True> Auto Rotate
+  <input type="checkbox" id="autorotate" checked=True> Auto Rotate -->
+
+<div class='row'>
+
+    <div class="row">
+      <div class="input-field col s2">
+        <select id="drawmode" class='browser-default'>
+          <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
+          <option value="gl.LINES">Graphics: Lines</option>
+          <option value="gl.POINTS">Graphics: Points</option>
+          <option value="gl.TRIANGLES">Graphics: Triangle</option>
+        </select>
+      </div>
+
+        <div class="input-field col s2">
+          <textarea rows="9" cols="14" id="polydisplay" value="" cols=30 style="width:220px; height:130px;"></textarea>
+        </div>
+                      <div class="input-field col s2">
+                        <button class='btn waves-effect waves-light' onclick="particleList=[]">Reset Particles</button>
+                      </div>
+</div>
+
+<div class='row'>
+
+    <div class="row">
+      <div class="input-field col s1">
+        <select id="scaleselect" class='browser-default'>
+          <option value="TTSTTTS">MajorScale</option>
+          <option value="TSTTSTT">MinorScale</option>
+          <option value="TTTTTTT">WholeTone</option>
+          <option value="TSTSTSTS">Octatonic1</option>
+          <option value="STSTSTST">Octatonic2</option>
+          <option value="TTSTSSTS">MajorFlat6</option>
+        </select>
+      </div>
+
+      
+        <div class="input-field col s1">
+          <input type="text" name="beat" value="Ioioioio" id="keykey">
+        </div>
+        <div class="input-field col s2">
+          <button class='btn waves-effect waves-light' onclick="applyupdate();">Push Notes </button>
+        </div>
+        
+
+        <div class="input-field col s1">
+          Key:
+          <input type="text" name="key" value="D" id="key" size=5>
+
+        </div>
+        <div class="input-field col s1">
+          Tempo:
+          <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
+        </div>
+
+</div>
+
+<div class="row">
 
 
-  <select id="drawmode">
+  </div>
+
+
+    
+
+  <!-- <label>Draw Mode</label>
+  <select id="drawmode" class='browser-default'>
     <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
     <option value="gl.LINES">Graphics: Lines</option>
     <option value="gl.POINTS">Graphics: Points</option>
     <option value="gl.TRIANGLES">Graphics: Triangle</option>
+  </select> -->
 
-  </select>
 
-  <button onclick="particleList=[]">Reset Particles</button>
+
+  
 
 
 
@@ -252,48 +350,24 @@ function autoMutate(times)
  
 
 
-   
-  <!-- <button onclick="notesarray=createRandomChord(3,MajorScale,document.getElementById('key').value);beatarray=fillpolyrhythm(notesarray.length);PRChord(notesarray,beatarray,60,context.currentTime+0.2,'triangle',1)">Random Chords</button> -->
 
 
-<table style="width:30%">
-  <tr>
-  <th>
-  <p>Rhythm cell Input</p>
-  <input type="text" name="beat" value="Ioioioio" id ="keykey">
-  <br>
-  <button onclick="applyupdate();">Push Notes</button>
+ 
+    
+
+
+
+
+
+
 
   
-</th>
-<th>
-  <p>Tempo</p> 
-  <div class="slidecontainer">
-  <input type="range" min=55 max=170 value=110 class="slider" id="tempochange">
-</div>
-  <table style = "width:10%">
-  <tr>
-  <th>
-  <p> Key: </p>
-  </th>
-  <th>
-    <input type="text" name="key" value="D" id ="key" size=5>
-  </th>
-  </tr>
-  </table>
   
-  <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)">UpFifth</button>
-  <button onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
-</th>
-<th>
-  <textarea rows="9" cols="14" id="polydisplay" value="" cols=30 style="width:220px"></textarea>
-</th>
-<th>
+  
 
-</th>
 
-</tr>
-</table>
+
+
   
 <script type="text/javascript">
 document.getElementById('key').value = circleofFifths.randomElement();
@@ -301,20 +375,19 @@ document.getElementById('key').value = circleofFifths.randomElement();
 InitDemo();
 </script>
 <!-- <input type="text" name="chorddisplay" value="" id="chorddisplay"> -->
-
-<h3>Press Start Generation to begin </h3>
-<p>
-  This program works upon the principle of layering independent components
-  <br>
-  'Push Random Layer' adds a new one to the stack, and conversely 'Remove Last Layer' pops one off the stack.
-  <br>
-  Different Graphics modes can be invoked using the selector next to the 'Reset Particles' button.
-  <br>
-  Auto Key Tempo and Auto Poly controls the automatic mutation engine. Disable for finer user control
-  <br>
-  Shuffle Polyrhythms brings the piece to a whole different feeling.
-</p>
-<br>
-<p>Made by Ethan Ooi 2019 </p>
+<hr>
+    <p>
+       &nbsp; This program works upon the principle of layering independent components
+      <br>
+       &nbsp; 'Push Random Layer' adds a new one to the stack, and conversely 'Remove Last Layer' pops one off the stack.
+      <br>
+      &nbsp; Different Graphics modes can be invoked using the selector next to the 'Reset Particles' button.
+      <br>
+       &nbsp; Auto Key Tempo and Auto Poly controls the automatic mutation engine. Disable for finer user control
+      <br>
+       &nbsp; Shuffle Polyrhythms brings the piece to a whole different feeling.
+    </p>
+    <br>
+    <p> &nbsp; Made by Ethan Ooi 2019 </p>
   </body>
 </html>
