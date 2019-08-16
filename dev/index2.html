@@ -9,7 +9,19 @@
 
   <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Generative Music</title>
+    <style>
+      /* remove the border */
+
+      /* make the canvas the size of the viewport */
+      canvas {
+        width: 60vw;
+        height: 70vh;
+        display: block;
+      }
+
+      </style>
   </head>
   <body>
     <nav>
@@ -17,12 +29,26 @@
         <a class="brand-logo left">&nbsp; Press Start Generation to begin</a>
       </div>
     </nav>
-    <!-- <h3> &nbsp; Press Start Generation to begin </h3> -->
-    <br>
+
   &nbsp;
     <script>
   
   var canvas = document.getElementById('glCanvas');
+
+  function resize(canvas) {
+  // Lookup the size the browser is displaying the canvas.
+  var displayWidth = canvas.clientWidth;
+  var displayHeight = canvas.clientHeight;
+
+  // Check if the canvas is not the same size.
+  if (canvas.width != displayWidth ||
+  canvas.height != displayHeight) {
+
+  // Make the canvas the same size
+  canvas.width = displayWidth;
+  canvas.height = displayHeight;
+  }
+  }
  
 function fullscreen(){
            var el = document.getElementById('glCanvas');
@@ -65,18 +91,17 @@ function fullscreen(){
     }
     function updateKey()
     {
-      currentkey = document.getElementById("key").value;
-      return currentkey;
+      return document.getElementById("key").value;
     }
     function updateTempo()
     {
-      currenttempo = document.getElementById("tempochange").value;
+      let currenttempo = document.getElementById("tempochange").value;
       GRAVITY_STRENGTH = 0.0001 + (0.001* currenttempo / 70);
       return currenttempo;
     }
     function updateScale()
     {
-      currentscale = document.getElementById("scaleselect").value;
+      let currentscale = document.getElementById("scaleselect").value;
       if (currentscale == WholeTone)
       {
         intervalstack =4;
@@ -95,7 +120,6 @@ function fullscreen(){
   Browser Unsupported
 </canvas>
 
-<br>
 <script>
   
 function updateGraphicsSettings()
@@ -221,15 +245,17 @@ function autoMutate(times)
 </script>
 
       &nbsp;
+
+
     <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
   <button class='btn waves-effect waves-light'  onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
   <button class='btn waves-effect waves-light'  onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
-   <!-- <button class='btn waves-effect waves-light'  onclick="updateGraphicsSettings()">Apply Particles</button> -->
    <button class='btn waves-effect waves-light'  onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button class='btn waves-effect waves-light'  onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
+  <button class='btn waves-effect waves-light' onclick="fullscreen()">Fullscreen</button>
+ <br>
+ <br>
 
- <br>
- <br>
 
 
 
@@ -242,7 +268,7 @@ function autoMutate(times)
   </label>
 
   <label>
-    <input type="checkbox" class="filled-in" checked=False id="autotempo" />
+    <input type="checkbox" class="filled-in" id="autotempo" />
     <span>Auto Tempo</span>
   </label>
 
@@ -261,7 +287,7 @@ function autoMutate(times)
   <button class='btn waves-effect waves-light'
     onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)">DownFifth</button>
 
-<br>
+
 <br>
 <!-- 
   <input type="checkbox" id="automutate" checked=True> Auto Key
@@ -271,7 +297,7 @@ function autoMutate(times)
 
 <div class='row'>
 
-    <div class="row">
+
       <div class="input-field col s3">
         <select id="drawmode" class='browser-default'>
           <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
@@ -281,17 +307,20 @@ function autoMutate(times)
         </select>
       </div>
 
-        <div class="input-field col s2">
-          <textarea rows="9" cols="14" id="polydisplay" value="" cols=30 style="width:220px; height:130px;"></textarea>
-        </div>
-                      <div class="input-field col s3">
-                        <button class='btn waves-effect waves-light' onclick="particleList=[]">Reset Particles</button>
-                      </div>
+      <div class="input-field col s1">
+        Key:
+        <input type="text" name="key" value="D" id="key" size=5>
+
+      </div>
+      <div class="input-field col s1">
+        Tempo:
+        <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
+      </div>
+        
+                      
 </div>
 
 <div class='row'>
-
-    <div class="row">
       <div class="input-field col s2">
         <select id="scaleselect" class='browser-default'>
           <option value="TTSTTTS">MajorScale</option>
@@ -307,27 +336,19 @@ function autoMutate(times)
         <div class="input-field col s1">
           <input type="text" name="beat" value="Ioioioio" id="keykey">
         </div>
-        <div class="input-field col s2">
-          <button class='btn waves-effect waves-light' onclick="applyupdate();">Push Notes </button>
-        </div>
-        
-
         <div class="input-field col s1">
-          Key:
-          <input type="text" name="key" value="D" id="key" size=5>
-
-        </div>
-        <div class="input-field col s1">
-          Tempo:
-          <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
+          <button class='btn waves-effect waves-light' onclick="applyupdate();">Push<i
+              class="small material-icons">arrow_forward</i></button>
         </div>
 
+         
+
+          <div class="input-field col s2">
+            <textarea id="polydisplay" value="" style="width:220px; height:130px;"></textarea>
+          </div>
+
+           
 </div>
-
-<div class="row">
-
-
-  </div>
 
 
     

@@ -267,7 +267,7 @@ function randompolyrhythm(div) {
   let re = "";
   let c = 0;
   for (var i = 0; i < div; i++) {
-    c = getRndInteger(1, 12);
+    c = getRndInteger(1, 15);
     switch (c) {
       case 1:
         re += "Io";
@@ -307,6 +307,15 @@ function randompolyrhythm(div) {
         break;
       case 11:
         re += "iI";
+        break;
+      case 12:
+        re += "xx";
+        break;
+      case 13:
+        re+= "xx";
+        break;
+      case 14:
+        re+= "ix";
         break;
     }
   }

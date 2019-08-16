@@ -4,14 +4,12 @@ var SHAPE_VERTEX = 2;
 var EMIT_RATE = 1;
 var AUTO_ROTATE = [0.2, -0.15	, 0.0];
 var particleList = [];
-var addqueue = [];
 var totalFrames = 0;
 var startTime = 0;
 var GRAVITY_STRENGTH = 0.00008;
 const devianceg = 0.00013;
 const deviancev = 0.0005
 var bgcolor;
-var removal = [];
 var PARTICLE_LIFE = 420;
 var INITIAL_VELOCITY = 0;
 var VELOCITY_VARIANCE = 0.1;
@@ -29,7 +27,6 @@ var Particle = function (x, y, z, c, t) {
 }
 
 function clearParticles() {
-  console.log(i);
   for (var i = 0; i <= particleList.length; i++) {
     removal.push(i);
   }
@@ -48,7 +45,6 @@ function circlePlace(number, min, max, voicelocation, lifespan, totalvoices, rad
   let outs = []
   if (voicelocation > PolyUnits.length) {
     voicelocation -= 1;
-    //console.log("hmm")
   }
   for (var i = 0; i < number; i++) {
     x = Math.sin((theta * voicelocation) * Math.PI / 180) * radius;
@@ -95,7 +91,9 @@ function randomInitParticles(number, min, max) {
 }
 
 function updateParticles(g) {
-	var returnlist = [];
+  var returnlist = [];
+  var addqueue = [];
+  var removal = [];
 
   // var returnlist = particleList;
   for (let k = 0; k < particleList.length; k++)
@@ -245,7 +243,7 @@ var InitDemo = function () {
   gl.enable(gl.CULL_FACE);
   gl.frontFace(gl.CCW);
   gl.cullFace(gl.BACK);
-  gl.lineWidth(100);
+  gl.lineWidth(1);
 
   vertexShader = gl.createShader(gl.VERTEX_SHADER);
   fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -337,11 +335,10 @@ var InitDemo = function () {
   gl.uniformMatrix4fv(matProjUniformLocation, gl.FALSE, projMatrix);
 
 
-  //MAIN RENDER LOOP
   var identityMatrix = new Float32Array(16);
   glmatrix_library.identity(identityMatrix);
   //console.log(particleList);
-
+  
   //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
   bgcolor = goodcolors[Math.floor(Math.random()*goodcolors.length)];
   gl.clearColor(bgcolor[0], bgcolor[1], bgcolor[2], 1.0);
@@ -350,38 +347,18 @@ var InitDemo = function () {
   var startTime = performance.now();
   var graphicstimeout;
   // console.log(bgcolor);
+  //MAIN RENDER LOOP
   graphics_loop = function () {
-    // var fps;
-    // var elapsed;
-    
-    //totalFrames++;
-    // elapsed = performance.now() - startTime;
-    // if (elapsed > 250) {
-      //   fps = totalFrames / (elapsed / 1000);
-      //   document.getElementById("fps").value = fps;
-      //   totalFrames = 0;
-      //   startTime = performance.now();
-      //   document.getElementById("vcount").value = particleList.length;
-      // }
-      
-      
+    resize(gl.canvas);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
       if (AUTO_ROTATE_TOGGLE) {
         
       angle = performance.now() / 2000 / 6 * 2 * Math.PI;
       glmatrix_library.rotate(worldMatrix, identityMatrix, angle, [AUTO_ROTATE[0], AUTO_ROTATE[1], AUTO_ROTATE[2]]);
     }
 
-    //mat4.rotate(worldMatrix, identityMatrix, angle*0.7, [-4,0,3]);
     gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-
-
     gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-
-    //particleList = particleList.concat(EmitSquare(EMIT_RATE,-1.0,1.0));
-    //emitTriangle();
-    //UPDATE PARTICLE POSITION HERE
-
-    //particleList = null;
     particleList = updateParticles(GRAVITY_STRENGTH);
 
     boxVertices = giveVertexBuffer(particleList);
@@ -394,7 +371,9 @@ var InitDemo = function () {
 
     graphicstimeout = setTimeout(() => {
       window.requestAnimationFrame(graphics_loop);
+      angle = null;
       clearTimeout(graphicstimeout);
+      graphicstimeout=null;
     }, 10);
     
   };
