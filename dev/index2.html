@@ -16,17 +16,30 @@
 
       /* make the canvas the size of the viewport */
       canvas {
-        width: 60vw;
-        height: 70vh;
-        display: block;
+        width: 80vw;
+        height: 60vh;
+        display: inline-block;
       }
+
+      #canvas-container {
+      width: 100%;
+      text-align:center;
+      }
+
+      .flexbox {
+      display: flex;
+      flew-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      }
+
 
       </style>
   </head>
   <body>
     <nav>
       <div class="nav-wrapper">
-        <a class="brand-logo left">&nbsp; Press Start Generation to begin</a>
+        <a class="brand-logo center">&nbsp; Press Start Generation to begin</a>
       </div>
     </nav>
 
@@ -115,10 +128,14 @@ function fullscreen(){
   </script>
 
 
-
-<canvas ondblclick="fullscreen()" id="glCanvas" width="900" height="700">
+<div id="canvas-container">
+<canvas ondblclick="fullscreen()" id="glCanvas">
   Browser Unsupported
 </canvas>
+
+</div>
+
+
 
 <script>
   
@@ -245,6 +262,9 @@ function autoMutate(times)
 </script>
 
       &nbsp;
+<div id="canvas-container">
+
+
 
 
     <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
@@ -288,9 +308,9 @@ function autoMutate(times)
   <button class='btn waves-effect waves-light'
     onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)"><i
       class="small material-icons">arrow_downward</i>DownFifth</button>
+</div>
 
 
-<br>
 <!-- 
   <input type="checkbox" id="automutate" checked=True> Auto Key
   <input type="checkbox" id="autotempo" checked=False> Auto Tempo
@@ -299,8 +319,12 @@ function autoMutate(times)
 
 <div class='row'>
 
+  <div class="flexbox">
 
-      <div class="input-field col s3">
+    <div class="input-field col s3"></div>
+
+
+      <div class="input-field col s2">
         <select id="drawmode" class='browser-default'>
           <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
           <option value="gl.LINES">Graphics: Lines</option>
@@ -309,20 +333,24 @@ function autoMutate(times)
         </select>
       </div>
 
-      <div class="input-field col s1">
+      <div class="input-field col s2">
         Key:
         <input type="text" name="key" value="D" id="key" size=5>
 
       </div>
-      <div class="input-field col s1">
+      <div class="input-field col s2">
         Tempo:
         <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
       </div>
+      <div class="input-field col s3"></div>
         
-                      
+         </div>
 </div>
 
 <div class='row'>
+  <div class="flexbox">
+    <div class="input-field col s2"></div>
+
       <div class="input-field col s2">
         <select id="scaleselect" class='browser-default'>
           <option value="TTSTTTS">MajorScale</option>
@@ -335,10 +363,10 @@ function autoMutate(times)
       </div>
 
       
-        <div class="input-field col s1">
+        <div class="input-field col s2">
           <input type="text" name="beat" value="Ioioioio" id="keykey">
         </div>
-        <div class="input-field col s1">
+        <div class="input-field col s2">
           <button class='btn waves-effect waves-light' onclick="applyupdate();">Push<i
               class="small material-icons">arrow_forward</i></button>
         </div>
@@ -348,8 +376,8 @@ function autoMutate(times)
           <div class="input-field col s2">
             <textarea id="polydisplay" value="" style="width:220px; height:130px;"></textarea>
           </div>
-
-           
+          <div class="input-field col s2"></div>
+           </div>
 </div>
 
 
@@ -400,7 +428,7 @@ InitDemo();
 </script>
 <!-- <input type="text" name="chorddisplay" value="" id="chorddisplay"> -->
 <hr>
-    <p>
+    <p align='center'>
        &nbsp; This program works upon the principle of layering independent components
       <br>
        &nbsp; 'Push Random Layer' adds a new one to the stack, and conversely 'Remove Last Layer' pops one off the stack.
@@ -412,6 +440,6 @@ InitDemo();
        &nbsp; Shuffle Polyrhythms brings the piece to a whole different feeling.
     </p>
     <br>
-    <p> &nbsp; Made by Ethan Ooi 2019 </p>
+    <p align='center'> &nbsp; Made by Ethan Ooi 2019 </p>
   </body>
 </html>
