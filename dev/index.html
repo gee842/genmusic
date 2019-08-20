@@ -1,0 +1,359 @@
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+
+<html>
+
+        <script src="MusicEngine.js"></script>
+        <script src="gl-matrix.js"></script>
+        <script src="GraphicsEngine.js"></script>
+
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Generative Music</title>
+    <style>
+      /* remove the border */
+
+      /* make the canvas the size of the viewport */
+      canvas {
+        width: 99vw;
+        height: 73vh;
+        display: inline-block;
+      }
+
+      #canvas-container {
+      width: 100%;
+      text-align:center;
+      }
+
+      .flexbox {
+      display: flex;
+      flew-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      }
+
+
+      </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a class="brand-logo center">&nbsp; Press Start Generation to begin</a>
+      </div>
+    </nav>
+
+    <script>
+  
+  var canvas = document.getElementById('glCanvas');
+
+    function resize(canvas) {
+    // Lookup the size the browser is displaying the canvas.
+    var displayWidth = canvas.clientWidth;
+    var displayHeight = canvas.clientHeight;
+
+    // Check if the canvas is not the same size.
+    if (canvas.width != displayWidth ||
+    canvas.height != displayHeight) {
+
+    // Make the canvas the same size
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+    }
+  }
+ 
+function fullscreen(){
+           var el = document.getElementById('glCanvas');
+ 
+           if(el.webkitRequestFullScreen) {
+               el.webkitRequestFullScreen();
+           }
+          else {
+             el.mozRequestFullScreen();
+          }            
+}
+
+
+var beatarray;
+var notesarray;
+var tempo;
+function viewPoly()
+{
+  for (var i = 0; i < PolyUnits.length; i++) {
+    console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+  }
+}
+function applyupdate()
+{
+
+  beatarray = document.getElementById("keykey").value;
+  notesarray = [];
+  tempo = document.getElementById("tempochange").value;
+  
+  type = "sine";
+  PolyUnits.push(new PolyUnit(beatarray,notesarray,tempo,type));
+
+  for (var i = 0; i < PolyUnits.length; i++) {
+    console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+  }
+
+}
+function updateKey()
+{
+  return document.getElementById("key").value;
+}
+function updateTempo()
+{
+  let currenttempo = document.getElementById("tempochange").value;
+  GRAVITY_STRENGTH = 0.0001 + (0.001* currenttempo / 70);
+  return currenttempo;
+}
+function updateScale()
+{
+  let currentscale = document.getElementById("scaleselect").value;
+  if (currentscale == WholeTone)
+  {
+    intervalstack =4;
+  }
+  else
+  {
+    intervalstack=3;
+  }
+  return currentscale;
+}
+</script>
+<div id="canvas-container">
+<canvas ondblclick="fullscreen()" id="glCanvas">
+  Browser Unsupported
+</canvas>
+</div>
+<script>
+function updateGraphicsSettings()
+{
+  AUTO_ROTATE_TOGGLE = document.getElementById('autorotate').checked;
+
+  if (document.getElementById("drawmode").value != DRAW_MODE)
+  {
+    console.log('graphics changed');
+    particleList = [];
+    DRAW_MODE = document.getElementById("drawmode").value;
+  }
+
+  switch(DRAW_MODE) {
+    case "gl.LINES":
+        SHAPE_VERTEX = 2;
+        EMIT_RATE = 2;
+        break;
+    case "gl.TRIANGLES":
+        SHAPE_VERTEX = 3
+        EMIT_RATE = 3;
+        break;
+    case "gl.POINTS":
+        SHAPE_VERTEX = 1
+        EMIT_RATE = 1;
+        break;
+    case "gl.LINE_STRIP":
+        SHAPE_VERTEX = 2
+        EMIT_RATE = 1;
+        break;
+
+  }
+
+}
+
+function autoMutate(times)
+{
+    let pol1 = Math.random() < 0.5 ? -1 : 1;
+    let pol2 = Math.random() < 0.5 ? -1 : 1;
+    let pol3 = Math.random() < 0.15 ? 1 : 0;
+    let pol4 = Math.random() < 0.5 ? 1 : 0;
+    let pol5 = Math.random() < 0.35 ? 1 : 0;
+    let currtempo;
+    let newtempo;
+
+  var mutseed = getRndInteger(1,times*4);
+  if (mutseed>times*1.8) 
+  {
+    if (pol5 && document.getElementById('autotempo').checked)
+    {
+
+    currtempo = parseFloat(document.getElementById('tempochange').value);
+    //console.log(currtempo);
+    tempodiff = getRndInteger(5,15);
+    pol1 = currtempo < 70 ? 1 : pol1;
+    newtempo = parseFloat(currtempo) + (pol1 * parseFloat(tempodiff));
+    //console.log(newtempo);
+    changeTempo(newtempo, PolyUnits);
+    (document.getElementById('tempochange').value) = (newtempo);
+
+    console.log("Tempo Changed: " + (pol1*tempodiff));
+
+    }
+    if (pol3 && document.getElementById('automutate').checked)
+    {
+
+    document.getElementById('key').value = 
+    key_transpose(document.getElementById('key').value,pol2*7);
+    console.log("Key changed")
+    }
+ 
+    if (document.getElementById('autopoly').checked && pol5)
+    {
+          shufflenum= getRndInteger(1,PolyUnits.length);
+    let targets = []
+    for (var i = 0; i < shufflenum; i++)
+    {
+      let target = getRndInteger(0,PolyUnits.length);
+      shufflePoly(target,target+1);
+      targets.push(target);
+    }
+      console.log(i+": Polyrhythms changed:" + targets);
+    }
+    
+    if (pol4 && (document.getElementById('autopoly').checked))
+    {
+      if (pol3)
+      {
+        if (PolyUnits.length>3){PolyUnits.pop()};
+        console.log("Last poly removed");
+      }
+
+      else if (PolyUnits.length <= 5){
+
+
+       PolyUnits.push(new PolyUnit(shuffleonePoly(),[],parseFloat(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));
+       console.log("New Poly Added")
+      }
+      
+    }
+    return 3;
+  }
+  else
+  {
+  return times+1;
+  }
+}
+</script>
+
+      &nbsp;
+<div id="canvas-container">
+  <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
+  <button class='btn waves-effect waves-light'  onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
+  <button class='btn waves-effect waves-light'  onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
+  <button class='btn waves-effect waves-light'  onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
+  <button class='btn waves-effect waves-light'  onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
+  <button class='btn waves-effect waves-light' onclick="fullscreen()">Fullscreen</button>
+ <br>
+ <br>
+
+
+
+
+ 
+    &nbsp;
+
+  <label>
+    <input type="checkbox" class="filled-in" checked=True id="automutate" />
+    <span>Auto Key</span>
+  </label>
+
+  <label>
+    <input type="checkbox" class="filled-in" id="autotempo" />
+    <span>Auto Tempo</span>
+  </label>
+
+  <label>
+    <input type="checkbox" class="filled-in" checked=True id="autopoly" />
+    <span>Auto Poly</span>
+  </label>
+
+  <label>
+    <input type="checkbox" class="filled-in" checked=True id="autorotate" />
+    <span>Auto Rotate</span>
+  </label>
+    &nbsp;
+  <button class='btn waves-effect waves-light'
+    onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,7)"><i
+      class="small material-icons">arrow_upward</i>UpFifth</button> &nbsp;
+  <button class='btn waves-effect waves-light'
+    onclick="document.getElementById('key').value = key_transpose(document.getElementById('key').value,-7)"><i
+      class="small material-icons">arrow_downward</i>DownFifth</button>
+</div>
+
+<div class='row'>
+
+  <div class="flexbox">
+
+    <div class="input-field col s3"></div>
+      <div class="input-field col s3">
+        <select id="drawmode" class='browser-default'>
+          <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
+          <option value="gl.LINES">Graphics: Lines</option>
+          <option value="gl.POINTS">Graphics: Points</option>
+          <option value="gl.TRIANGLES">Graphics: Triangle</option>
+        </select>
+      </div>
+
+      <div class="input-field col s1">
+        Key:
+        <input type="text" name="key" value="D" id="key" size=5>
+
+      </div>
+      <div class="input-field col s2">
+        Tempo:
+        <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
+      </div>
+      <div class="input-field col s3"></div>
+        
+         </div>
+</div>
+
+<div class='row'>
+  <div class="flexbox">
+    <div class="input-field col s3"></div>
+
+      <div class="input-field col s2">
+        <select id="scaleselect" class='browser-default'>
+          <option value="TTSTTTS">MajorScale</option>
+          <option value="TSTTSTT">MinorScale</option>
+          <option value="TTTTTTT">WholeTone</option>
+          <option value="TSTSTSTS">Octatonic1</option>
+          <option value="STSTSTST">Octatonic2</option>
+          <option value="TTSTSSTS">MajorFlat6</option>
+        </select>
+      </div>
+        <div class="input-field col s1">
+          <input type="text" name="beat" value="Ioioioio" id="keykey">
+        </div>
+        <div class="input-field col s1">
+          <button class='btn waves-effect waves-light' onclick="applyupdate();">Push<i
+              class="small material-icons">arrow_forward</i></button>
+        </div>
+          <div class="input-field col s2">
+            <textarea id="polydisplay" value="" style="width:220px; height:130px;"></textarea>
+          </div>
+          <div class="input-field col s3"></div>
+           </div>
+</div>
+
+<script type="text/javascript">
+document.getElementById('key').value = circleofFifths.randomElement();
+
+InitDemo();
+</script>
+<hr>
+    <p align='center'>
+       &nbsp; This program works upon the principle of layering independent components
+      <br>
+       &nbsp; 'Push Random Layer' adds a new one to the stack, and conversely 'Remove Last Layer' pops one off the stack.
+      <br>
+      &nbsp; Different Graphics modes can be invoked using the selector next to the 'Reset Particles' button.
+      <br>
+       &nbsp; Auto Key Tempo and Auto Poly controls the automatic mutation engine. Disable for finer user control
+      <br>
+       &nbsp; Shuffle Polyrhythms brings the piece to a whole different feeling.
+    </p>
+    <br>
+    <p align='center'> &nbsp; Made by Ethan Ooi 2019 </p>
+  </body>
+</html>
