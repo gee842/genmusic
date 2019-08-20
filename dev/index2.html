@@ -47,19 +47,19 @@
   
   var canvas = document.getElementById('glCanvas');
 
-  function resize(canvas) {
-  // Lookup the size the browser is displaying the canvas.
-  var displayWidth = canvas.clientWidth;
-  var displayHeight = canvas.clientHeight;
+    function resize(canvas) {
+    // Lookup the size the browser is displaying the canvas.
+    var displayWidth = canvas.clientWidth;
+    var displayHeight = canvas.clientHeight;
 
-  // Check if the canvas is not the same size.
-  if (canvas.width != displayWidth ||
-  canvas.height != displayHeight) {
+    // Check if the canvas is not the same size.
+    if (canvas.width != displayWidth ||
+    canvas.height != displayHeight) {
 
-  // Make the canvas the same size
-  canvas.width = displayWidth;
-  canvas.height = displayHeight;
-  }
+    // Make the canvas the same size
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+    }
   }
  
 function fullscreen(){
@@ -74,75 +74,62 @@ function fullscreen(){
 }
 
 
-  var beatarray;
-  var notesarray;
-  var tempo;
+var beatarray;
+var notesarray;
+var tempo;
+function viewPoly()
+{
+  for (var i = 0; i < PolyUnits.length; i++) {
+    console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+  }
+}
+function applyupdate()
+{
 
+  beatarray = document.getElementById("keykey").value;
+  notesarray = [];
+  tempo = document.getElementById("tempochange").value;
+  
+  type = "sine";
+  PolyUnits.push(new PolyUnit(beatarray,notesarray,tempo,type));
 
+  for (var i = 0; i < PolyUnits.length; i++) {
+    console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
+  }
 
-    function viewPoly()
-    {
-      for (var i = 0; i < PolyUnits.length; i++) {
-        console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
-      }
-    }
-    function applyupdate()
-    {
-
-      beatarray = document.getElementById("keykey").value;
-      notesarray = [];
-      tempo = document.getElementById("tempochange").value;
-      
-      type = "sine";
-      PolyUnits.push(new PolyUnit(beatarray,notesarray,tempo,type));
-
-      for (var i = 0; i < PolyUnits.length; i++) {
-        console.log(PolyUnits[i].rhythm + " - " + PolyUnits[i].notes);
-      }
-
-    }
-    function updateKey()
-    {
-      return document.getElementById("key").value;
-    }
-    function updateTempo()
-    {
-      let currenttempo = document.getElementById("tempochange").value;
-      GRAVITY_STRENGTH = 0.0001 + (0.001* currenttempo / 70);
-      return currenttempo;
-    }
-    function updateScale()
-    {
-      let currentscale = document.getElementById("scaleselect").value;
-      if (currentscale == WholeTone)
-      {
-        intervalstack =4;
-      }
-      else
-      {
-        intervalstack=3;
-      }
-      return currentscale;
-    }
-  </script>
-
-
+}
+function updateKey()
+{
+  return document.getElementById("key").value;
+}
+function updateTempo()
+{
+  let currenttempo = document.getElementById("tempochange").value;
+  GRAVITY_STRENGTH = 0.0001 + (0.001* currenttempo / 70);
+  return currenttempo;
+}
+function updateScale()
+{
+  let currentscale = document.getElementById("scaleselect").value;
+  if (currentscale == WholeTone)
+  {
+    intervalstack =4;
+  }
+  else
+  {
+    intervalstack=3;
+  }
+  return currentscale;
+}
+</script>
 <div id="canvas-container">
 <canvas ondblclick="fullscreen()" id="glCanvas">
   Browser Unsupported
 </canvas>
-
 </div>
-
-
-
 <script>
-  
 function updateGraphicsSettings()
 {
-
-  
-
   AUTO_ROTATE_TOGGLE = document.getElementById('autorotate').checked;
 
   if (document.getElementById("drawmode").value != DRAW_MODE)
@@ -151,11 +138,6 @@ function updateGraphicsSettings()
     particleList = [];
     DRAW_MODE = document.getElementById("drawmode").value;
   }
-
-
-
-
-  //SHAPE_VERTEX = document.getElementById("drawnum").value;
 
   switch(DRAW_MODE) {
     case "gl.LINES":
@@ -190,7 +172,6 @@ function autoMutate(times)
     let newtempo;
 
   var mutseed = getRndInteger(1,times*4);
-  //console.log("times" + times);
   if (mutseed>times*1.8) 
   {
     if (pol5 && document.getElementById('autotempo').checked)
@@ -229,7 +210,6 @@ function autoMutate(times)
       console.log(i+": Polyrhythms changed:" + targets);
     }
     
-
     if (pol4 && (document.getElementById('autopoly').checked))
     {
       if (pol3)
@@ -246,8 +226,6 @@ function autoMutate(times)
       }
       
     }
-
-
     return 3;
   }
   else
@@ -255,20 +233,14 @@ function autoMutate(times)
   return times+1;
   }
 }
-
-
 </script>
 
       &nbsp;
 <div id="canvas-container">
-
-
-
-
-    <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
+  <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
   <button class='btn waves-effect waves-light'  onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
   <button class='btn waves-effect waves-light'  onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
-   <button class='btn waves-effect waves-light'  onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
+  <button class='btn waves-effect waves-light'  onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button class='btn waves-effect waves-light'  onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
   <button class='btn waves-effect waves-light' onclick="fullscreen()">Fullscreen</button>
  <br>
@@ -308,20 +280,11 @@ function autoMutate(times)
       class="small material-icons">arrow_downward</i>DownFifth</button>
 </div>
 
-
-<!-- 
-  <input type="checkbox" id="automutate" checked=True> Auto Key
-  <input type="checkbox" id="autotempo" checked=False> Auto Tempo
-  <input type="checkbox" id="autopoly" checked=True> Auto Poly
-  <input type="checkbox" id="autorotate" checked=True> Auto Rotate -->
-
 <div class='row'>
 
   <div class="flexbox">
 
     <div class="input-field col s3"></div>
-
-
       <div class="input-field col s3">
         <select id="drawmode" class='browser-default'>
           <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
@@ -359,8 +322,6 @@ function autoMutate(times)
           <option value="TTSTSSTS">MajorFlat6</option>
         </select>
       </div>
-
-      
         <div class="input-field col s1">
           <input type="text" name="beat" value="Ioioioio" id="keykey">
         </div>
@@ -368,9 +329,6 @@ function autoMutate(times)
           <button class='btn waves-effect waves-light' onclick="applyupdate();">Push<i
               class="small material-icons">arrow_forward</i></button>
         </div>
-
-         
-
           <div class="input-field col s2">
             <textarea id="polydisplay" value="" style="width:220px; height:130px;"></textarea>
           </div>
@@ -378,53 +336,11 @@ function autoMutate(times)
            </div>
 </div>
 
-
-    
-
-  <!-- <label>Draw Mode</label>
-  <select id="drawmode" class='browser-default'>
-    <option value="gl.LINE_STRIP">Graphics: Lines Connect</option>
-    <option value="gl.LINES">Graphics: Lines</option>
-    <option value="gl.POINTS">Graphics: Points</option>
-    <option value="gl.TRIANGLES">Graphics: Triangle</option>
-  </select> -->
-
-
-
-  
-
-
-
-
-
- 
-
-
-
-
- 
-    
-
-
-
-
-
-
-
-  
-  
-  
-
-
-
-
-  
 <script type="text/javascript">
 document.getElementById('key').value = circleofFifths.randomElement();
 
 InitDemo();
 </script>
-<!-- <input type="text" name="chorddisplay" value="" id="chorddisplay"> -->
 <hr>
     <p align='center'>
        &nbsp; This program works upon the principle of layering independent components

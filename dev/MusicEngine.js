@@ -1,5 +1,4 @@
 "use strict";
-
 var mutatenumber = 3;
 var lastnotedegree = 1;
 var notesbuffer = [];
@@ -12,6 +11,11 @@ var lastOscUsed = 0;
 var intervalstack = 3;
 var firstbar = 1;
 var globalscale = 'TSTTSTS';
+var e_l_notedegree;
+var e_l_basetempo;
+var e_l_updateChords;
+var e_l_oldchords;
+var set_timeout;
 const GlobalNotes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 const MajorScale = 'TTSTTTS';
 const MinorScale = 'TSTTSTS';
@@ -43,7 +47,6 @@ function pastelColor(colormix) {
 
 }
 
-
 function PolyUnit(rhythm, notes, basetempo, type) {
   this.rhythm = rhythm;
   this.notes = notes;
@@ -61,14 +64,6 @@ PolyUnit.prototype.play = function (startTime) {
   ostinato(this.rhythm, this.notes[0], this.basetempo * this.cr, startTime, this.type, this.voicenumber);
 }
 
-
-// var ee = new 
-// var dd = 
-// var cc = new PolyUnit("ixIoixixIoix",[],110,"triangle")
-// var aa = new PolyUnit("xxixxxix",[],110,"sine")
-
-
-
 PolyUnits.push(new PolyUnit("ioix", [], 110, "sine"));
 PolyUnits.push(new PolyUnit("ixxi", [], 110, "triangle"));
 // PolyUnits.push(new PolyUnit("xxixIo",[],110,"triangle"));
@@ -78,8 +73,6 @@ PolyUnits.push(new PolyUnit("xxixxxix", [], 110, "sine"));
 Array.prototype.randomElement = function () {
   return this[Math.floor(Math.random() * this.length)]
 }
-
-
 
 function changeTempo(targetTempo, Cells) {
   for (var i = Cells.length - 1; i >= 0; i--) {
@@ -128,43 +121,9 @@ function findDistance(note1, note2) {
 
 }
 
-// function eval_minor_nine(chord)
-// {
-
-//   valid = 1;
-//   for (var i = 0; i < chord.length; i++) { //note1
-//     for (var j = 0; j < chord.length; j++) { //note2
-
-//       if (i == j)
-//       {
-//         continue;
-//       }
-//       else if (i<j)
-//       {
-//         distance = findDistance(chord[i],chord[j])
-//         // console.log(chord[i]);
-//         // console.log(chord[j]);
-//         // console.log(distance);
-//         if (distance == 13 || distance == -13)
-//         {
-//           valid = 0;
-
-//           return 0;
-//         }
-//       }
-//     }
-//   }
-
-//   return valid;
-// }
-
-
-
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
-
-
 
 function key_transpose(note, setting) {
   let originalnum = 0;
@@ -182,12 +141,6 @@ function key_transpose(note, setting) {
   }
 
 }
-
-
-
-
-//scaleNote(3, C3, MajorScale) = E3
-
 
 function getScale(key, scale) //returns set of notes
 {
@@ -210,10 +163,6 @@ function getScale(key, scale) //returns set of notes
   return scaleset;
 }
 
-//findDegree(E, C, Major) = 3 << (1,2,3,4,5,6,7)
-
-
-//dia_chordConstructor(C,3,3(rds), 4, yes): E4 G3 A3 D5
 function dia_chordConstructor(key, currentdegree, interval, number, scale) {
   let chordtones = [];
   let notes = getScale(key, scale);
@@ -256,13 +205,10 @@ function scatter(inputnotes, scat) {
       outputnotes.push(inputnotes[i] + "4");
     }
   }
-
-
   return outputnotes;
 }
 
 function randompolyrhythm(div) {
-
   let re = "";
   let c = 0;
   for (var i = 0; i < div; i++) {
@@ -372,7 +318,6 @@ function chordchanger(currentchord) {
   return selectedchord;
 }
 
-
 //Input: Previous Notes, Target Chord | Output: Next notes
 function voice_seperation(key, currentdegree, interval, number, scale) {
   let upperb = 7;
@@ -395,9 +340,6 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
     currentdegree = (currentdegree + (interval - 1)) % notes.length
   }
 
-
-
-
   if (global_previous_chords.length == chordtones.length) {
     for (var i = 0; i < number; i++) {
       if (global_previous_chords[i].length === 3) {
@@ -408,14 +350,7 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
       }
 
       leftdist = findDistance((chordtones[i] + ((octave) - 1)), global_previous_chords[i]);
-
-
-
-
-
       rightdist = findDistance((chordtones[i] + ((octave) + 1)), global_previous_chords[i]);
-
-
       samedist = findDistance((chordtones[i] + (octave)), global_previous_chords[i]);
 
       if ((leftdist <= rightdist) && (leftdist <= samedist)) {
@@ -439,8 +374,6 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
         chordtones[i] = chordtones[i] + (octave);
         console.log("unexpected:" + leftdist + " " + rightdist + " " + samedist + " ");
       }
-
-
     }
 
   } else if (global_previous_chords.length > chordtones.length) //polys removed
@@ -456,24 +389,14 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
       }
 
       leftdist = findDistance((chordtones[i] + ((octave) - 1)), global_previous_chords[i]);
-
-
-
-
-
       rightdist = findDistance((chordtones[i] + ((octave) + 1)), global_previous_chords[i]);
-
-
       samedist = findDistance((chordtones[i] + (octave)), global_previous_chords[i]);
-
       if ((leftdist <= rightdist) && (leftdist <= samedist)) {
         if (octave > lowerb) {
           chordtones[i] = chordtones[i] + (octave - 1);
         } else {
           chordtones[i] = chordtones[i] + (octave);
         }
-
-
       } else if ((rightdist <= leftdist) && (rightdist <= samedist)) {
         if (octave < upperb) {
           chordtones[i] = chordtones[i] + (octave + 1);
@@ -488,11 +411,7 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
         chordtones[i] = chordtones[i] + (octave);
         console.log("unexpected:" + leftdist + " " + rightdist + " " + samedist + " ");
       }
-
-
     }
-
-
   } else if (global_previous_chords.length < chordtones.length) //polys added
   {
 
@@ -505,14 +424,7 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
       }
 
       leftdist = findDistance((chordtones[i] + ((octave) - 1)), global_previous_chords[i]);
-
-
-
-
-
       rightdist = findDistance((chordtones[i] + ((octave) + 1)), global_previous_chords[i]);
-
-
       samedist = findDistance((chordtones[i] + (octave)), global_previous_chords[i]);
 
       if ((leftdist <= rightdist) && (leftdist <= samedist)) {
@@ -521,8 +433,6 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
         } else {
           chordtones[i] = chordtones[i] + (octave);
         }
-
-
       } else if ((rightdist <= leftdist) && (rightdist <= samedist)) {
         if (octave < upperb) {
           chordtones[i] = chordtones[i] + (octave + 1);
@@ -537,38 +447,24 @@ function voice_seperation(key, currentdegree, interval, number, scale) {
         chordtones[i] = chordtones[i] + (octave);
         console.log("unexpected:" + leftdist + " " + rightdist + " " + samedist + " ");
       }
-
-
     }
     for (var i = global_previous_chords.length; i < chordtones.length; i++) {
       chordtones[i] = chordtones[i] + getRndInteger(4, 6);
     }
-
   }
-
 
   if (isEqual(global_previous_chords, chordtones)) {
     chordtones = scatter(chordcache, 1);
-
   }
-
   return chordtones;
-
 }
-
-
-
-
-
 //----Melody Harmony BOILERPLATE CODE____-----____---____--___-_____---
 //eachvoice should have their own oscillator array.
 
 function playNotes(notearray, oscillators, gains, eqs, time, eighthNoteTime, duration, accent, type, context) {
-
   gains[lastOscUsed] = null;
   oscillators[lastOscUsed] = null;
   eqs[lastOscUsed] = null;
-
   gains[lastOscUsed] = context.createGain();
   oscillators[lastOscUsed] = context.createOscillator();
   eqs[lastOscUsed] = context.createBiquadFilter();
@@ -579,11 +475,7 @@ function playNotes(notearray, oscillators, gains, eqs, time, eighthNoteTime, dur
   eqs[lastOscUsed].frequency.setValueAtTime(notetoFreq("F4"), context.currentTime);
   eqs[lastOscUsed].gain.setValueAtTime(-20, context.currentTime);
   eqs[lastOscUsed].q = 1.4;
-
   eqs[lastOscUsed].connect(gains[lastOscUsed]);
-
-
-
   gains[lastOscUsed].connect(context.destination);
 
   if (accent) {
@@ -602,14 +494,12 @@ function playNotes(notearray, oscillators, gains, eqs, time, eighthNoteTime, dur
 function notetoFreq(note) { //[Note][Octave0-9]
   var octave;
   var noteNumber;
-
   if (note.length === 3) {
     octave = note.charAt(2);
   } else {
     octave = note.charAt(1);
   }
   noteNumber = GlobalNotes.indexOf(note.slice(0, -1));
-
   if (noteNumber < 3) { // If below C
     noteNumber = noteNumber + 13 + (12 * (octave - 1)) //adjusting by the octave
   } else {
@@ -625,7 +515,6 @@ function init_eqs(context, size) {
   }
   return oscarray;
 }
-
 
 function init_osc(context, type, size) {
   let oscarray = [];
@@ -645,10 +534,8 @@ function init_gain(context, size) {
 }
 
 //----POLYUNIT BOILERPLATE CODE____-----____---____--___-_____----
-
 function shufflePoly(start, end) {
   var chosencolor;
-  
   let cr = PolyUnits[0].rhythm.length / 8;
   for (var i = start; i < end; i++) {
     chosencolor = pastelColor([1, 1, 1]); 
@@ -665,36 +552,21 @@ function shuffleonePoly() {
   return randompolyrhythm(getRndInteger(2, 7));
 }
 
-
 function PolyTrigger(PolyArray, time) {
-  //timediff = (expectedtime-time);
-  //
-  // document.getElementById('chorddisplay').value = ""
   document.getElementById('polydisplay').value = ""
   for (var i = 0; i < PolyArray.length; i++) {
     document.getElementById('polydisplay').value += PolyArray[i].rhythm + "--";
     document.getElementById('polydisplay').value += PolyArray[i].notes + "\n";
     PolyArray[i].play(time, i);
-
-
   }
-  // document.getElementById('chorddisplay').value = document.getElementById('chorddisplay').value.slice(0, document.getElementById('chorddisplay').value.length - 1)
 }
 
-
-var e_l_notedegree;
-var e_l_basetempo;
-var e_l_updateChords;
-var e_l_oldchords;
-
 e_l_updateChords = function () {
-
   e_l_notedegree = lastnotedegree;
   e_l_basetempo = PolyUnits[0].basetempo;
   if ((lastnotedegree == 5 || lastnotedegree == 4) && document.getElementById('automutate').checked) {
     if (Math.random() < 0.35) //percent chance of keychange on 4 or 5
     {
-
       document.getElementById('key').value =
         key_transpose(document.getElementById('key').value, (Math.random() < 0.5 ? 1 : -1) * 7);
       console.log("Key changed")
@@ -707,27 +579,10 @@ e_l_updateChords = function () {
     e_l_notedegree = chordchanger(lastnotedegree);
 
   }
-
 }
 
-
-var set_timeout;
 function EventLoop(key, startTime) {
-  
   if (isPlaying == 1) {
-
-
-    
-
-    //var minorcheck = 0;
-    //while (eval_minor_nine(chordtones) == 0) //checks minor ninths
-    //{
-    // chordtones = dia_chordConstructor(key,notedegree,intervalstack,PolyUnits.length,globalscale);
-    // chordtones = scatter(chordtones,1);
-    // minorcheck+=1;
-    //}
-    //console.log("Minor Ninth Check Count:" + minorcheck);
-
     clearTimeout(set_timeout);
     set_timeout = setTimeout(() => {
       e_l_updateChords();
@@ -743,11 +598,7 @@ function EventLoop(key, startTime) {
           console.log(global_previous_chords);
         }
       }
-
-
-
       //-------------------------------------
-
       for (var i = 0; i < PolyUnits.length; i++) {
         PolyUnits[i].notes = null;
         PolyUnits[i].notes = [global_previous_chords[i]];
@@ -756,8 +607,6 @@ function EventLoop(key, startTime) {
       lastnotedegree = e_l_notedegree;
       PolyTrigger(PolyUnits, context.currentTime)
     }, startTime - context.currentTime);
-
-
     let nextkey = updateKey();
     let globalscale = updateScale();
     changeTempo(document.getElementById('tempochange').value, PolyUnits);
@@ -773,8 +622,6 @@ function EventLoop(key, startTime) {
     barcount += 1;
     if (barcount < -1) {
       isPlaying = 0;
-
-
       setTimeout(function () {
         isPlaying = 1;
         barcount = 0;
@@ -792,9 +639,6 @@ function EventLoop(key, startTime) {
     console.log("done");
     barcount = 0;
   }
-
-  
-
 }
 
 function ostinato(rhythm, notearray, tempo, startTime, type, playingvoice) {
@@ -842,9 +686,5 @@ function ostinato(rhythm, notearray, tempo, startTime, type, playingvoice) {
       case "o":
         break;
     }
-
-
   }
-  // time = startTime + bar * rhythm.length * eighthNoteTime;
-
 }

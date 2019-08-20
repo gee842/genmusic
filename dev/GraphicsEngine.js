@@ -32,11 +32,9 @@ function clearParticles() {
   }
 }
 
-
 function pushParticle(x, y, z, [cr, cg, cb], lifespan) {
   return new Particle(x, y, z, [cr, cg, cb], lifespan);
 }
-
 
 //r * sin(theta) = x, r* sin(90-theta) = y, where theta is 360/voices, and r is radius
 function circlePlace(number, min, max, voicelocation, lifespan, totalvoices, radius) {
@@ -63,18 +61,12 @@ function circlePlace(number, min, max, voicelocation, lifespan, totalvoices, rad
 
 }
 
-
-
 function emitLocation(voicelocation) {
   //get locations
   particleList = particleList.concat(circlePlace(EMIT_RATE, 0.5, -0.5, voicelocation, PARTICLE_LIFE, PolyUnits.length, 2));
 }
 
-
-
-
 function randomInitParticles(number, min, max) {
-
   let outs = [];
   let x, y, z, cr, cg, cb;
   for (var i = 0; i < number; i++) {
@@ -275,15 +267,6 @@ var InitDemo = function () {
   }
 
   boxVertices = giveVertexBuffer(particleList);
-
-  // var boxVertices =
-  // [ // X, Y, Z           R, G, B
-  //  // Top
-  //  -1.0, 1.0, -1.0,   0.5, 0.5, 0.5,
-  //  -1.0, 1.0, 1.0,    0.5, 0.5, 0.5,
-  //  1.0, 1.0, 1.0,     0.5, 0.5, 0.5,
-  // ];
-
   var boxIndices = giveParticleOrder(particleList);
 
   var boxVertexBufferObject = gl.createBuffer();
@@ -337,16 +320,9 @@ var InitDemo = function () {
 
   var identityMatrix = new Float32Array(16);
   glmatrix_library.identity(identityMatrix);
-  //console.log(particleList);
-  
-  //particleList = particleList.concat(randomInitParticles(40,1.5,-1.5));
   bgcolor = goodcolors[Math.floor(Math.random()*goodcolors.length)];
   gl.clearColor(bgcolor[0], bgcolor[1], bgcolor[2], 1.0);
   var angle = 0;
-  var totalFrames = 0;
-  var startTime = performance.now();
-  var graphicstimeout;
-  // console.log(bgcolor);
   //MAIN RENDER LOOP
   graphics_loop = function () {
     resize(gl.canvas);
@@ -369,7 +345,7 @@ var InitDemo = function () {
 
     gl.drawElements(eval(DRAW_MODE), boxIndices.length, gl.UNSIGNED_SHORT, 0);
 
-    graphicstimeout = setTimeout(() => {
+    let graphicstimeout = setTimeout(() => {
       window.requestAnimationFrame(graphics_loop);
       angle = null;
       clearTimeout(graphicstimeout);
