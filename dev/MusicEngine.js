@@ -1,7 +1,6 @@
 "use strict";
 
 var mutatenumber = 3;
-var automutate_switch = 1;
 var lastnotedegree = 1;
 var notesbuffer = [];
 var barcount = 0;
@@ -692,7 +691,7 @@ e_l_updateChords = function () {
 
   e_l_notedegree = lastnotedegree;
   e_l_basetempo = PolyUnits[0].basetempo;
-  if ((lastnotedegree == 5 || lastnotedegree == 4) && automutate_switch) {
+  if ((lastnotedegree == 5 || lastnotedegree == 4) && document.getElementById('automutate').checked) {
     if (Math.random() < 0.35) //percent chance of keychange on 4 or 5
     {
 
@@ -765,12 +764,12 @@ function EventLoop(key, startTime) {
     updateGraphicsSettings()
 
 
-    if ((document.getElementById('automutate').checked)) {
+
       if ((barcount % 2 == 0)) {
 
         mutatenumber = autoMutate(mutatenumber);
       }
-    }
+
     barcount += 1;
     if (barcount < -1) {
       isPlaying = 0;

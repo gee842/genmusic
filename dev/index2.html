@@ -185,7 +185,7 @@ function autoMutate(times)
     let pol2 = Math.random() < 0.5 ? -1 : 1;
     let pol3 = Math.random() < 0.15 ? 1 : 0;
     let pol4 = Math.random() < 0.5 ? 1 : 0;
-    let pol5 = Math.random() < 0.3 ? 1 : 0;
+    let pol5 = Math.random() < 0.35 ? 1 : 0;
     let currtempo;
     let newtempo;
 
@@ -208,28 +208,27 @@ function autoMutate(times)
     console.log("Tempo Changed: " + (pol1*tempodiff));
 
     }
-    if (pol3)
+    if (pol3 && document.getElementById('automutate').checked)
     {
 
     document.getElementById('key').value = 
     key_transpose(document.getElementById('key').value,pol2*7);
     console.log("Key changed")
     }
-    else
+ 
+    if (document.getElementById('autopoly').checked && pol5)
     {
-      if (document.getElementById('autopoly').checked && pol5)
-      {
-            shufflenum= getRndInteger(1,PolyUnits.length);
-      let targets = []
-      for (var i = 0; i < shufflenum; i++)
-      {
-        let target = getRndInteger(0,PolyUnits.length);
-        shufflePoly(target,target+1);
-        targets.push(target);
-      }
-        console.log(i+": Polyrhythms changed:" + targets);
-      }
+          shufflenum= getRndInteger(1,PolyUnits.length);
+    let targets = []
+    for (var i = 0; i < shufflenum; i++)
+    {
+      let target = getRndInteger(0,PolyUnits.length);
+      shufflePoly(target,target+1);
+      targets.push(target);
     }
+      console.log(i+": Polyrhythms changed:" + targets);
+    }
+    
 
     if (pol4 && (document.getElementById('autopoly').checked))
     {
@@ -320,7 +319,7 @@ function autoMutate(times)
 
   <div class="flexbox">
 
-    <div class="input-field col s2"></div>
+    <div class="input-field col s3"></div>
 
 
       <div class="input-field col s3">
@@ -332,23 +331,23 @@ function autoMutate(times)
         </select>
       </div>
 
-      <div class="input-field col s2">
+      <div class="input-field col s1">
         Key:
         <input type="text" name="key" value="D" id="key" size=5>
 
       </div>
-      <div class="input-field col s3">
+      <div class="input-field col s2">
         Tempo:
         <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
       </div>
-      <div class="input-field col s2"></div>
+      <div class="input-field col s3"></div>
         
          </div>
 </div>
 
 <div class='row'>
   <div class="flexbox">
-    <div class="input-field col s2"></div>
+    <div class="input-field col s3"></div>
 
       <div class="input-field col s2">
         <select id="scaleselect" class='browser-default'>
@@ -362,10 +361,10 @@ function autoMutate(times)
       </div>
 
       
-        <div class="input-field col s2">
+        <div class="input-field col s1">
           <input type="text" name="beat" value="Ioioioio" id="keykey">
         </div>
-        <div class="input-field col s2">
+        <div class="input-field col s1">
           <button class='btn waves-effect waves-light' onclick="applyupdate();">Push<i
               class="small material-icons">arrow_forward</i></button>
         </div>
@@ -375,7 +374,7 @@ function autoMutate(times)
           <div class="input-field col s2">
             <textarea id="polydisplay" value="" style="width:220px; height:130px;"></textarea>
           </div>
-          <div class="input-field col s2"></div>
+          <div class="input-field col s3"></div>
            </div>
 </div>
 
