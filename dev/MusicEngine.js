@@ -16,6 +16,8 @@ var e_l_basetempo;
 var e_l_updateChords;
 var e_l_oldchords;
 var set_timeout;
+var gainMultiplier =1.0;
+
 const GlobalNotes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 const MajorScale = 'TTSTTTS';
 const MinorScale = 'TSTTSTS';
@@ -478,10 +480,11 @@ function playNotes(notearray, oscillators, gains, eqs, time, eighthNoteTime, dur
   eqs[lastOscUsed].connect(gains[lastOscUsed]);
   gains[lastOscUsed].connect(context.destination);
 
+  gainMultiplier = document.getElementById('playerGain').value/10;
   if (accent) {
-    gains[lastOscUsed].gain.setValueAtTime(0.5, time);
+    gains[lastOscUsed].gain.setValueAtTime(0.5*gainMultiplier, time);
   } else {
-    gains[lastOscUsed].gain.setValueAtTime(0.13, time);
+    gains[lastOscUsed].gain.setValueAtTime(0.13 * gainMultiplier, time);
   }
 
   gains[lastOscUsed].gain.exponentialRampToValueAtTime(0.0001, (time + eighthNoteTime * (duration + 1)) + (eighthNoteTime * (duration + 4)));

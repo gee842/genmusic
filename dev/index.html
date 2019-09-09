@@ -17,7 +17,7 @@
 
       /* make the canvas the size of the viewport */
       canvas {
-        width: 99vw;
+        width: 98.9vw;
         height: 73vh;
         display: inline-block;
       }
@@ -300,9 +300,13 @@ function autoMutate(times)
         <input type="text" name="key" value="D" id="key" size=5>
 
       </div>
-      <div class="input-field col s2">
+      <div class="input-field col s1">
         Tempo:
         <input type="range" min=55 max=170 value=110 class="browser-default" id="tempochange" />
+      </div>
+      <div class="input-field col s1">
+        Volume:
+        <input type="range" min=0 max=40 value=10 class="browser-default" id="playerGain" />
       </div>
       <div class="input-field col s3"></div>
         
@@ -331,7 +335,7 @@ function autoMutate(times)
               class="small material-icons">arrow_forward</i></button>
         </div>
           <div class="input-field col s2">
-            <textarea id="polydisplay" value="" style="width:220px; height:130px;"></textarea>
+            <textarea id="polydisplay" value="" style="width:150px; height:130px;"></textarea>
           </div>
           <div class="input-field col s3"></div>
            </div>
