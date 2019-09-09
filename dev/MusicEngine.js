@@ -18,6 +18,7 @@ var e_l_oldchords;
 var set_timeout;
 var gainMultiplier =1.0;
 
+
 const GlobalNotes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 const MajorScale = 'TTSTTTS';
 const MinorScale = 'TSTTSTS';
@@ -672,14 +673,17 @@ function ostinato(rhythm, notearray, tempo, startTime, type, playingvoice) {
     switch (state) {
       case "I":
         //play
-        setTimeout(locationEmit, 1000 * ((time + i * eighthNoteTime) - context.currentTime));
+        if (drawGraphics){
+          setTimeout(locationEmit, 1000 * ((time + i * eighthNoteTime) - context.currentTime));
+        }
 
         playNotes(notearray, OstOsc, Gains, EQArray, time + i * eighthNoteTime, eighthNoteTime, (durationadded), 1, type, context);
 
         break;
       case "i":
-
-        setTimeout(locationEmit, 1000 * ((time + i * eighthNoteTime) - context.currentTime));
+        if (drawGraphics) {
+          setTimeout(locationEmit, 1000 * ((time + i * eighthNoteTime) - context.currentTime));
+        }
         playNotes(notearray, OstOsc, Gains, EQArray, time + i * eighthNoteTime, eighthNoteTime, (durationadded), 0, type, context);
         break;
 

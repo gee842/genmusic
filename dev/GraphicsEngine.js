@@ -25,6 +25,7 @@ var Particle = function (x, y, z, c, t) {
   this.c = c;
   this.t = t;
 }
+var drawGraphics = true;
 
 function clearParticles() {
   for (var i = 0; i <= particleList.length; i++) {
@@ -325,32 +326,39 @@ var InitDemo = function () {
   var angle = 0;
   //MAIN RENDER LOOP
   graphics_loop = function () {
+    drawGraphics = document.getElementById('drawgraphics').checked;
     resize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+    if (drawGraphics){
       if (AUTO_ROTATE_TOGGLE) {
-        
-      angle = performance.now() / 2000 / 6 * 2 * Math.PI;
-      glmatrix_library.rotate(worldMatrix, identityMatrix, angle, [AUTO_ROTATE[0], AUTO_ROTATE[1], AUTO_ROTATE[2]]);
+
+        angle = performance.now() / 2000 / 6 * 2 * Math.PI;
+        glmatrix_library.rotate(worldMatrix, identityMatrix, angle, [AUTO_ROTATE[0], AUTO_ROTATE[1], AUTO_ROTATE[2]]);
+      }
+
+      gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
+      gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+      particleList = updateParticles(GRAVITY_STRENGTH);
+
+      boxVertices = giveVertexBuffer(particleList);
+      boxIndices = giveParticleOrder(particleList);
+
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
+
+      gl.drawElements(eval(DRAW_MODE), boxIndices.length, gl.UNSIGNED_SHORT, 0);
+
     }
-
-    gl.uniformMatrix4fv(matWorldUniformLocation, gl.FALSE, worldMatrix);
-    gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
-    particleList = updateParticles(GRAVITY_STRENGTH);
-
-    boxVertices = giveVertexBuffer(particleList);
-    boxIndices = giveParticleOrder(particleList);
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(boxVertices), gl.STATIC_DRAW);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(boxIndices), gl.STATIC_DRAW);
-
-    gl.drawElements(eval(DRAW_MODE), boxIndices.length, gl.UNSIGNED_SHORT, 0);
-
-    let graphicstimeout = setTimeout(() => {
-      window.requestAnimationFrame(graphics_loop);
-      angle = null;
-      clearTimeout(graphicstimeout);
-      graphicstimeout=null;
-    }, 10);
+    else{
+      gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+    }
+      let graphicstimeout = setTimeout(() => {
+        window.requestAnimationFrame(graphics_loop);
+        angle = null;
+        clearTimeout(graphicstimeout);
+        graphicstimeout = null;
+      }, 10);
+    
     
   };
   window.requestAnimationFrame(graphics_loop);
