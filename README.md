@@ -1,4 +1,4 @@
-# genmusic - Hosted here: https://gee842.github.io/genmusic/dev/index2.html
+# genmusic - Hosted here: https://gee842.github.io/genmusic/dev/
 
 ## Generative Music Vanilla Javascript Web Application. 
 
