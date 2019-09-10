@@ -2,6 +2,16 @@
 
 ## Generative Music Vanilla Javascript Web Application. 
 
+Creates an ever evolving soundscape, gradually mutating components and shifting into different keys.
+
+Works by constructing chords using a simple interval stacking method, then rearranging them to different octaves to create inversions.
+
+Tries to obey voice leading rules, omiting minor ninths, and minimize movements of each voice to maintain smoothness and consistency.
+
+Includes simple webGL particle-system-based graphics that follows the musi, and loosely represents the voices.
+
+
+
 ### Instructions
 
 Hit Start generation, additional info of permutations in console.
