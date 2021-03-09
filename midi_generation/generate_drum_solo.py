@@ -61,13 +61,13 @@ notegen = NoteGenerator(pitches,beat_subdivision,mean_velocity=100)
 for i in range(num_beats):
     current_subdivision = 0
     while current_subdivision < 0.9996:
-        print('a')
         pitch,volume = notegen.get_next_note(current_subdivision)
         # pitch = random.choice(pitches)
         notegen.insert_note(pitch,current_subdivision+i,beat_subdivision,volume)
         current_subdivision += beat_subdivision
 
-notegen.write()       
+notegen.write()
+print('Midi Written')
         
 
 
