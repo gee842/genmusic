@@ -40,7 +40,7 @@
   <body>
     <nav>
       <div class="nav-wrapper">
-        <a class="brand-logo center">&nbsp; Press Start Generation to begin</a>
+        <a class="brand-logo center">&nbsp; Press Start to begin your musical wallpaper</a>
       </div>
     </nav>
 
@@ -238,8 +238,8 @@ function autoMutate(times)
 
       &nbsp;
 <div id="canvas-container">
-  <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start Generation</button>
-  <button class='btn waves-effect waves-light'  onclick="isPlaying = 0;firstbar=0;">Stop Generation</button>
+  <button class='btn waves-effect waves-light'  onclick="if(!isPlaying){isPlaying = 1;shufflePoly(0,PolyUnits.length);changeTempo(updateTempo(),PolyUnits);updateGraphicsSettings();barcount=0;EventLoop(document.getElementById('key').value,context.currentTime+2,document.getElementById('scaleselect').value);}">Start</button>
+  <button class='btn waves-effect waves-light'  onclick="isPlaying = 0;firstbar=0;">Stop</button>
   <button class='btn waves-effect waves-light'  onclick="shufflePoly(0,PolyUnits.length);viewPoly();">Shuffle Polyrhythms</button>
   <button class='btn waves-effect waves-light'  onclick="PolyUnits.push(new PolyUnit(shuffleonePoly(),[],(document.getElementById('tempochange').value),Math.random() >0.5 ?'sine':'triangle'));console.log('-');viewPoly();">Push Random Layer</button>
   <button class='btn waves-effect waves-light'  onclick="if (PolyUnits.length>1){PolyUnits.pop();}">Remove Last Layer</button>
