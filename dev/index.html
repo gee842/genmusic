@@ -345,6 +345,67 @@ function autoMutate(times)
            </div>
 </div>
 
+<div class='row'>
+  <div class="flexbox">
+
+    <div class='row' align="center">
+      <div class="input-field col s5">
+        <select id="backgroundSoundSelect" class='browser-default'>
+          <option value="background_sounds/sound1.mp3">Rain</option>
+          <option value="background_sounds/sound2.mp3">Forest Waterfall</option>
+          <option value="background_sounds/sound3.mp3">Springtime Birds</option>
+          <option value="background_sounds/sound4.mp3">Ocean Waves</option>
+          <!-- Add more sounds as needed -->
+        </select>
+      </div>
+
+      <div class="input-field col s3">
+        <button class='btn waves-effect waves-light' id="playSoundButton">Play Sound</button>
+      </div>
+
+      <div class="input-field col s3">
+        <button class='btn waves-effect waves-light' id="stopSoundButton">Stop Sound</button>
+      </div>
+
+    <div class="input-field col s3">
+      <label for="volumeControl">Volume:</label>
+      <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.5" /> <!-- Default value set to 50% -->
+    </div>
+
+    <!-- </div> -->
+
+    <audio id="backgroundAudio" src="" loop hidden></audio>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var audioPlayer = document.getElementById('backgroundAudio');
+          var volumeControl = document.getElementById('volumeControl');
+      
+          // Set initial volume from the slider's default value
+          audioPlayer.volume = volumeControl.value;
+      
+          volumeControl.addEventListener('input', function() {
+              audioPlayer.volume = this.value;
+          });
+      
+          document.getElementById('playSoundButton').addEventListener('click', function() {
+              var soundFile = document.getElementById('backgroundSoundSelect').value;
+              audioPlayer.src = soundFile;
+              audioPlayer.play();
+          });
+
+          document.getElementById('stopSoundButton').addEventListener('click', function() {
+            var soundFile = document.getElementById('backgroundSoundSelect').value;
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+        });
+      });
+      </script>
+
+      
+  </div>
+</div>
+
 <script type="text/javascript">
 document.getElementById('key').value = circleofFifths.randomElement();
 
