@@ -274,48 +274,66 @@ function randompolyrhythm(div) {
 
 function chordchanger(currentchord) {
   let selectedchord = 0;
-  switch (currentchord) {
-    case 1:
-      {
-        selectedchord = [1, 1, 4, 5, 6, 3].randomElement();
-        break;
-      }
+  let progressionType = Math.random(); // Determine type of progression
 
-    case 2:
-      {
-        selectedchord = [5, 3, 5, 4, 6].randomElement();
+  if (progressionType < 0.6) { // Standard functional harmony
+    switch (currentchord) {
+      case 1: {
+        selectedchord = [1, 1, 4, 5, 6, 3, 2].randomElement();
         break;
       }
-
-    case 3:
-      {
-        selectedchord = [3, 1, 6, 6, 4, 4].randomElement();
+      case 2: {
+        selectedchord = [5, 5, 3, 4, 7].randomElement();
         break;
       }
-
-    case 4:
-      {
-        selectedchord = [1, 1, 4, 5, 2].randomElement();
+      case 3: {
+        selectedchord = [3, 6, 6, 4, 4, 2].randomElement();
         break;
       }
-
-    case 5:
-      {
-        selectedchord = [1, 1, 4, 6].randomElement();
+      case 4: {
+        selectedchord = [1, 1, 4, 5, 2, 7].randomElement();
         break;
       }
-
-    case 6:
-      {
-        selectedchord = [1, 1, 4, 2, 2].randomElement();
+      case 5: {
+        selectedchord = [1, 1, 6, 3, 4].randomElement();
         break;
       }
-
-    case 7:
-      {
-        selectedchord = [3, 5, 3, 1, 1].randomElement();
+      case 6: {
+        selectedchord = [1, 2, 4, 2, 5].randomElement();
         break;
       }
+      case 7: {
+        selectedchord = [3, 1, 6, 1].randomElement();
+        break;
+      }
+    }
+  } else if (progressionType < 0.8) { // Secondary dominants
+    switch (currentchord) {
+      case 1: selectedchord = 5; break;
+      case 2: selectedchord = 6; break;
+      case 3: selectedchord = 7; break;
+      case 4: selectedchord = 1; break;
+      case 5: selectedchord = 2; break;
+      case 6: selectedchord = 3; break;
+      case 7: selectedchord = 4; break;
+    }
+  } else if (progressionType < 0.9) { // Jazz-style ii-V-I
+    switch (currentchord) {
+      case 1: selectedchord = 2; break;
+      case 2: selectedchord = 5; break;
+      case 5: selectedchord = 1; break;
+      default: selectedchord = 2; break;
+    }
+  } else { // Chromatic mediants
+    let chromaticChoices = [
+      currentchord + 3,
+      currentchord + 4,
+      currentchord - 3,
+      currentchord - 4
+    ];
+    selectedchord = chromaticChoices.randomElement();
+    if (selectedchord > 7) selectedchord -= 7;
+    if (selectedchord < 1) selectedchord += 7;
   }
 
   return selectedchord;
